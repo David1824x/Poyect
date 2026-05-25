@@ -8,7 +8,7 @@ import java.util.List;
 
 public class EquipoDAO {
 
-    // 1. REGISTRAR EQUIPO (C - Create)
+    //1. REGISTRAR EQUIPO 
     public void insertar(EquipoTecnologico eq) throws SQLException {
         String sql = "INSERT INTO EquipoTecnologico (tipoEquipo, especificaciones, tarifaPorHora, estado, fechaAdquisicion) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = Conexion.conectar();
@@ -22,7 +22,7 @@ public class EquipoDAO {
         }
     }
 
-    // 2. BUSCAR TODOS (R - Read)
+    //2. BUSCAR TODOS 
     public List<EquipoTecnologico> buscarTodos() throws SQLException {
         List<EquipoTecnologico> lista = new ArrayList<>();
         String sql = "SELECT * FROM EquipoTecnologico";
@@ -43,7 +43,7 @@ public class EquipoDAO {
         return lista;
     }
 
-    // 3. BUSCAR POR ID (Para monitoreo o edición individual)
+    //3. BUSCAR POR ID (
     public EquipoTecnologico buscarPorId(int id) throws SQLException {
         String sql = "SELECT * FROM EquipoTecnologico WHERE idEquipo = ?";
         try (Connection conn = Conexion.conectar();
@@ -64,7 +64,7 @@ public class EquipoDAO {
         return null;
     }
 
-    // 4. ACTUALIZAR (U - Update)
+    //4. ACTUALIZAR 
     public void actualizar(EquipoTecnologico eq) throws SQLException {
         String sql = "UPDATE EquipoTecnologico SET tipoEquipo = ?, especificaciones = ?, tarifaPorHora = ?, estado = ?, fechaAdquisicion = ? WHERE idEquipo = ?";
         try (Connection conn = Conexion.conectar();
@@ -79,7 +79,7 @@ public class EquipoDAO {
         }
     }
 
-    // 5. ELIMINAR (D - Delete)
+    //5. ELIMINAR 
     public void eliminar(int id) throws SQLException {
         String sql = "DELETE FROM EquipoTecnologico WHERE idEquipo = ?";
         try (Connection conn = Conexion.conectar();

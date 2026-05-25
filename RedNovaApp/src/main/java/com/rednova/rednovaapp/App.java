@@ -23,7 +23,6 @@ public class App extends Application {
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(40, 20, 40, 20));
 
-        // --- HEADER PRINCIPAL ---
         VBox headerBox = new VBox(4);
         headerBox.setAlignment(Pos.CENTER);
         Label lblTitle = new Label("REDNOVA OS");
@@ -34,13 +33,11 @@ public class App extends Application {
         lblSubtitle.setStyle("-fx-text-fill: #C3073F;");
         headerBox.getChildren().addAll(lblTitle, lblSubtitle);
 
-        // --- CONTENEDOR DIVISOR (IZQUIERDA | DERECHA) ---
-        HBox splitLayout = new HBox(60); // Espaciado amplio entre las dos columnas
+        //--- CONTENEDOR DIVISOR (IZQUIERDA | DERECHA) ---
+        HBox splitLayout = new HBox(60); //Espaciado amplio entre las dos columnas
         splitLayout.setAlignment(Pos.CENTER);
 
-        // =========================================================================
-        // COLUMNA IZQUIERDA: OPERACIONES (COMPRAS Y RENTAS)
-        // =========================================================================
+        //COLUMNA IZQUIERDA: OPERACIONES (COMPRAS Y RENTAS)
         VBox leftColumn = new VBox(15);
         leftColumn.setAlignment(Pos.TOP_CENTER);
 
@@ -51,7 +48,7 @@ public class App extends Application {
         GridPane leftGrid = new GridPane();
         leftGrid.setHgap(15); leftGrid.setVgap(15); leftGrid.setAlignment(Pos.CENTER);
         
-        // Botones de salida/flujo comercial
+        //Botones de salida/flujo comercial
         leftGrid.add(crearBtn("🛒 Punto de Venta", e -> new VentanaVentas().mostrar()), 0, 0);
         leftGrid.add(crearBtn("💻 Renta de Equipos", e -> new VentanaRentaEquipos().mostrar()), 1, 0);
         leftGrid.add(crearBtn("🏢 Renta de Espacios", e -> new VentanaRentaEspacios().mostrar()), 0, 1);
@@ -59,9 +56,7 @@ public class App extends Application {
         
         leftColumn.getChildren().addAll(lblLeftSection, leftGrid);
 
-        // =========================================================================
-        // COLUMNA DERECHA: ADMINISTRACIÓN (ALTA DE DATOS Y CATÁLOGOS)
-        // =========================================================================
+        //COLUMNA DERECHA: ADMINISTRACIÓN (ALTA DE DATOS Y CATÁLOGOS)
         VBox rightColumn = new VBox(15);
         rightColumn.setAlignment(Pos.TOP_CENTER);
 
@@ -72,19 +67,19 @@ public class App extends Application {
         GridPane rightGrid = new GridPane();
         rightGrid.setHgap(15); rightGrid.setVgap(15); rightGrid.setAlignment(Pos.CENTER);
         
-        // Botones de administración/CRUDs
+        //Botones de administración/CRUDs
         rightGrid.add(crearBtn("👥 Control Usuarios", e -> new VentanaUsuarios().mostrar()), 0, 0);
         rightGrid.add(crearBtn("📦 Alta de Productos", e -> new VentanaProductos().mostrar()), 1, 0);
-        rightGrid.add(crearBtn("⚙️ Alta Equipos Tech", e -> new VentanaRenta().mostrar()), 0, 1); // Mantiene tu ventana de gestión base
+        rightGrid.add(crearBtn("⚙️ Alta Equipos Tech", e -> new VentanaRenta().mostrar()), 0, 1);
         rightGrid.add(crearBtn("🛠️ Control Coworking", e -> new VentanaCoworking().mostrar()), 1, 1);
         
         rightColumn.getChildren().addAll(lblRightSection, rightGrid);
 
-        // --- INTEGRACIÓN AL DISEÑO ---
+        //--- INTEGRACIÓN AL DISEÑO ---
         splitLayout.getChildren().addAll(leftColumn, rightColumn);
         root.getChildren().addAll(headerBox, splitLayout);
 
-        // Configuración de la escena principal
+        //Configuración de la escena principal
         Scene scene = new Scene(root, 1050, 550);
         stage.setScene(scene);
         stage.setTitle("RedNova OS - Panel de Control Integrado");
@@ -92,14 +87,14 @@ public class App extends Application {
         stage.show();
     }
 
-    // Método factoría optimizado con listeners de transición visual (Hover effect)
+    //Método factoría optimizado con listeners de transición visual (Hover effect)
     private Button crearBtn(String texto, javafx.event.EventHandler<javafx.event.ActionEvent> evento) {
         Button btn = new Button(texto);
-        btn.setPrefSize(210, 110); // Ligeramente más amplios para mejor legibilidad de los íconos
+        btn.setPrefSize(210, 110);
         btn.setStyle(styleBtnNormal);
         btn.setOnAction(evento);
         
-        // Eventos dinámicos del puntero
+        //Eventos dinámicos del puntero
         btn.setOnMouseEntered(e -> btn.setStyle(styleBtnHover));
         btn.setOnMouseExited(e -> btn.setStyle(styleBtnNormal));
         

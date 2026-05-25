@@ -1,10 +1,10 @@
 package com.rednova.model;
 
 public class ReporteVenta {
-    private String concepto;     // Producto, Espacio o Equipo
-    private String cantidad;     // "3 u." o "2 horas" o "5 horas"
-    private double precio;        // Costo calculado o precio unitario
-    private String fecha;         // Fecha de emisión o reserva
+    private String concepto;     //Producto, Espacio o Equipo
+    private String cantidad;     //"3 u." o "2 horas" o "5 horas"
+    private double precio;        //Costo calculado o precio unitario
+    private String fecha;         //Fecha de emisión o reserva
 
     public ReporteVenta() {}
 

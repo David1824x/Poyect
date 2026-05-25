@@ -12,7 +12,7 @@ public class Usuario {
     private int puntosLealtad;
     private String nivelMembresia;
 
-    // Constructor completo para cuando traes datos de la BD
+    //Constructor completo para cuando traes datos de la BD
     public Usuario(int id, String numeroControl, String correo, String nombre, 
                    String tipoUsuario, LocalDate fechaRegistro, int puntosLealtad, String nivelMembresia) {
         this.id = id;
@@ -25,7 +25,7 @@ public class Usuario {
         this.nivelMembresia = nivelMembresia;
     }
 
-    // Getters
+    //Getters
     public int getId() { return id; }
     public String getNumeroControl() { return numeroControl; }
     public String getCorreoInstitucional() { return correo; }
@@ -35,7 +35,7 @@ public class Usuario {
     public int getPuntosLealtad() { return puntosLealtad; }
     public String getNivelMembresia() { return nivelMembresia; }
 
-    // Setters (útiles para actualizar objetos antes de guardarlos)
+    //Setters (útiles para actualizar objetos antes de guardarlos)
     public void setPuntosLealtad(int puntosLealtad) { this.puntosLealtad = puntosLealtad; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setTipoUsuario(String tipoUsuario) { this.tipoUsuario = tipoUsuario; }

@@ -4,9 +4,9 @@ import com.rednova.dao.ReservaEquipoDAO;
 import com.rednova.model.ReservaEquipo;
 import java.sql.Date;
 import com.rednova.dao.UsuarioDAO;
-import com.rednova.dao.EquipoDAO; // Asume este DAO para los equipos
+import com.rednova.dao.EquipoDAO; 
 import com.rednova.model.Usuario;
-import com.rednova.model.EquipoTecnologico;    // Asume este Modelo (debe tener getNombreEquipo, getPrecioHora)
+import com.rednova.model.EquipoTecnologico; 
 import javafx.collections.FXCollections;
 import javafx.geometry.*;
 import javafx.scene.Scene;
@@ -64,7 +64,7 @@ public class VentanaRentaEquipos {
         formGrid.setHgap(15); formGrid.setVgap(14); formGrid.setPadding(new Insets(22));
         formGrid.setStyle(String.format("-fx-background-color: %s; -fx-background-radius: 6; -fx-border-color: #27272A; -fx-border-radius: 6;", COLOR_CARD));
 
-        // ID Usuario y Nombre reactivo
+        //ID Usuario y Nombre reactivo
         Label lblUsuarioId = new Label("ID Usuario:");
         lblUsuarioId.setStyle(STYLE_LABEL);
         TextField txtUsuarioId = new TextField();
@@ -75,7 +75,7 @@ public class VentanaRentaEquipos {
         Label lblNombreClienteValor = new Label("---");
         lblNombreClienteValor.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-style: italic;");
 
-        // ComboBox Equipos con Convertidor Limpio
+        //ComboBox Equipos con Convertidor Limpio
         Label lblEquipo = new Label("Seleccionar Equipo:");
         lblEquipo.setStyle(STYLE_LABEL);
         ComboBox<EquipoTecnologico> comboEquipo = new ComboBox<>();
@@ -91,7 +91,7 @@ public class VentanaRentaEquipos {
             @Override public EquipoTecnologico fromString(String string) { return null; }
         });
 
-        // Carga desde DB
+        //Carga desde DB
         try {
             List<EquipoTecnologico> listaEquipos = new EquipoDAO().buscarTodos();
             comboEquipo.setItems(FXCollections.observableArrayList(listaEquipos));
@@ -99,13 +99,13 @@ public class VentanaRentaEquipos {
             new Alert(Alert.AlertType.ERROR, "Error al cargar equipos: " + ex.getMessage()).show();
         }
 
-        // Horas de uso
+        //Horas de uso
         Label lblHoras = new Label("Horas de Uso:");
         lblHoras.setStyle(STYLE_LABEL);
         TextField txtHoras = new TextField();
         txtHoras.setStyle(STYLE_INPUT);
 
-        // Puntos de Lealtad
+        //Puntos de Lealtad
         Label lblPuntosTexto = new Label("Descuento Puntos:");
         lblPuntosTexto.setStyle(STYLE_LABEL);
         HBox puntosContainer = new HBox(10);
@@ -117,7 +117,7 @@ public class VentanaRentaEquipos {
         lblPuntosDisponiblesValor.setStyle("-fx-text-fill: " + COLOR_TEXT_MUTED + "; -fx-font-size: 12px;");
         puntosContainer.getChildren().addAll(txtPuntosCanjear, lblPuntosDisponiblesValor);
 
-        // Costo Final
+        //Costo Final
         Label lblTotalTexto = new Label("Costo Total:");
         lblTotalTexto.setStyle(STYLE_LABEL);
         Label lblTotalDinero = new Label("$0.00");
@@ -164,7 +164,7 @@ public class VentanaRentaEquipos {
         comboEquipo.valueProperty().addListener((o, old, n) -> calcularTotalDinamico.run());
         txtPuntosCanjear.textProperty().addListener((o, old, n) -> calcularTotalDinamico.run());
 
-        // Escuchador del Usuario
+        //Escuchador del Usuario
         txtUsuarioId.textProperty().addListener((o, old, nuevoId) -> {
             String idLimpio = nuevoId.trim();
             if (idLimpio.isEmpty()) {
@@ -199,7 +199,7 @@ public class VentanaRentaEquipos {
         footerBox.getChildren().addAll(btnCancelar, btnRegistrar);
         mainLayout.setBottom(footerBox);
 
-        // Registro final
+        //Registro final
         btnRegistrar.setOnAction(e -> {
 
     try {

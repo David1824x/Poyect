@@ -1,7 +1,7 @@
 package com.rednova.controller;
 
 import com.rednova.dao.VentaDAO;
-import com.rednova.dao.ProductoDAO; // DAO de productos actualizado
+import com.rednova.dao.ProductoDAO; 
 import com.rednova.dao.UsuarioDAO;
 import com.rednova.model.Producto;
 import com.rednova.model.Usuario;
@@ -13,12 +13,12 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.util.StringConverter; // IMPORTANTE para limpiar el ComboBox
+import javafx.util.StringConverter; 
 import java.util.List;
 
 public class VentanaVentas {
 
-    // Paleta de colores formal (Estilo Dark Premium con el acento Carmesí de RedNova)
+    //Paleta de colores formal (Estilo Dark Premium con el acento Carmesí de RedNova)
     private final String COLOR_BG = "#121214";
     private final String COLOR_CARD = "#1A1A1E";
     private final String COLOR_INPUT = "#26262B";
@@ -83,7 +83,6 @@ public class VentanaVentas {
         comboProducto.setMaxWidth(Double.MAX_VALUE);
         comboProducto.setPromptText("Seleccione un ítem...");
 
-        // SOLUCIÓN AL NOMBRE RARO: Forzar al ComboBox a renderizar solo el Nombre del Producto
         comboProducto.setConverter(new StringConverter<Producto>() {
             @Override
             public String toString(Producto prod) {
@@ -96,7 +95,7 @@ public class VentanaVentas {
             }
         });
 
-        // Carga de catálogo de productos
+        //Carga de catálogo de productos
         try {
             List<Producto> listaProductos = new ProductoDAO().buscarTodos();
             comboProducto.setItems(FXCollections.observableArrayList(listaProductos));
@@ -223,7 +222,7 @@ public class VentanaVentas {
                 int cant = Integer.parseInt(txtCantidad.getText().trim());
                 int stockDisponible = prodSeleccionado.getStockActual(); // Obtiene las existencias actuales
 
-                // VALIDACIÓN DE STOCK: Evita vender lo que no hay
+                //VALIDACIÓN DE STOCK: Evita vender lo que no hay
                 if (cant > stockDisponible) {
                     new Alert(Alert.AlertType.WARNING, "Stock insuficiente. Unidades disponibles: " + stockDisponible).show();
                     return;
@@ -239,10 +238,10 @@ public class VentanaVentas {
                 int ptsUtilizados = Integer.parseInt(txtPuntosCanjear.getText().trim());
                 double totalFinal = (cant * precio) - ptsUtilizados;
 
-                // 1. Guarda la venta en la base de datos
+                //1. Guarda la venta en la base de datos
                 new VentaDAO().registrarVentaCompleta(uId, totalFinal, totalFinal, comboMetodo.getValue(), pId, cant, precio);
                 
-                // 2. ACTUALIZA EL INVENTARIO EN LA BASE DE DATOS
+                //2. ACTUALIZA EL INVENTARIO EN LA BASE DE DATOS
                 int nuevoStock = stockDisponible - cant;
                 new ProductoDAO().actualizarStock(pId, nuevoStock);
                 

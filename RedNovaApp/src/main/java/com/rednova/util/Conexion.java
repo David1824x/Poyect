@@ -10,7 +10,7 @@ public class Conexion {
     // Configuración optimizada para MySQL con codificación y permisos activos
     private static final String URL = "jdbc:mysql://localhost:3306/" + DATABASE + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USER = "admin_rednova"; // <-- El usuario nuevo
-    private static final String PASSWORD = "ssamas"; // <-- Tu contraseña
+    private static final String PASSWORD = "david2504"; // <-- Tu contraseña
 
     public static Connection conectar() {
         Connection cn = null;

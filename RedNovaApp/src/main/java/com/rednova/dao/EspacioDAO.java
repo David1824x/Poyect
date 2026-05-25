@@ -7,10 +7,7 @@ import java.util.List;
 
 public class EspacioDAO {
 
-    // Cambia "Conexion.getConexion()" por el método exacto que use tu clase de conexión
     private Connection obtenerConexion() throws SQLException {
-        // Ejemplo: return com.rednova.util.Conexion.getConexion();
-        // Asegúrate de que no retorne null para evitar el error createStatement()
         Connection cn = com.rednova.util.Conexion.conectar(); 
         if (cn == null) {
             throw new SQLException("La conexión a la base de datos 'rednova_db' es nula. Revisa tus credenciales.");

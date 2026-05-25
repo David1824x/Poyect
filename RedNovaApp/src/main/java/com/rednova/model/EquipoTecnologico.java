@@ -4,19 +4,19 @@ import java.time.LocalDate;
 
 public class EquipoTecnologico {
     
-    // Atributos alineados con la base de datos y la interfaz
+    //Atributos alineados con la base de datos y la interfaz
     private int idEquipo;
-    private String tipoEquipo;        // Laptop, Proyector, etc.
-    private String especificaciones;  // Marca, RAM, Procesador...
-    private double tarifaPorHora;     // Costo de renta
-    private String estado;            // Disponible, En Uso, Mantenimiento
+    private String tipoEquipo;        //Laptop, Proyector, etc.
+    private String especificaciones;  //Marca, RAM, Procesador...
+    private double tarifaPorHora;     //Costo de renta
+    private String estado;            //Disponible, En Uso, Mantenimiento
     private LocalDate fechaAdquisicion;
 
-    // 1. Constructor vacío (Obligatorio por buenas prácticas)
+    //1. Constructor vacío 
     public EquipoTecnologico() {
     }
 
-    // 2. Constructor parametrizado completo (Utilizado por el DAO y Controlador)
+    //2. Constructor parametrizado completo 
     public EquipoTecnologico(int idEquipo, String tipoEquipo, String especificaciones, double tarifaPorHora, String estado, LocalDate fechaAdquisicion) {
         this.idEquipo = idEquipo;
         this.tipoEquipo = tipoEquipo;
@@ -26,9 +26,7 @@ public class EquipoTecnologico {
         this.fechaAdquisicion = fechaAdquisicion;
     }
 
-    // ==========================================
-    //          GETTERS Y SETTERS  as
-    // ==========================================
+    //GETTERS Y SETTERS  
 
     public int getIdEquipo() {
         return idEquipo;
@@ -78,7 +76,7 @@ public class EquipoTecnologico {
         this.fechaAdquisicion = fechaAdquisicion;
     }
 
-    // Métod toString auxiliar (Muy útil para debugear por consola)
+    //MétodO toString auxiliar 
     @Override
     public String toString() {
         return "EquipoTecnologico{" +

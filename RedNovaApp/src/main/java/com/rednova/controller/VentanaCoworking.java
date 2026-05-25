@@ -14,7 +14,7 @@ import java.util.List;
 
 public class VentanaCoworking {
 
-    // Paleta de colores premium de RedNova OS
+    //Paleta de colores premium de RedNova OS
     private final String COLOR_BG = "#121214";
     private final String COLOR_CARD = "#1A1A1E";
     private final String COLOR_INPUT = "#26262B";
@@ -23,10 +23,10 @@ public class VentanaCoworking {
     private final String COLOR_TEXT_PRIMARY = "#FFFFFF";
     private final String COLOR_TEXT_MUTED = "#A0A0A5";
 
-    // Variable de control interna
+    //Variable de control interna
     private int idEspacioSeleccionado = 0;
 
-    // Estilos CSS Reutilizables
+    //Estilos CSS Reutilizables
     private final String STYLE_INPUT = String.format(
         "-fx-background-color: %s; -fx-text-fill: %s; -fx-border-color: #3F3F46; " +
         "-fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 10; -fx-font-size: 13px;",
@@ -49,7 +49,7 @@ public class VentanaCoworking {
         headerBox.setPadding(new Insets(0, 0, 16, 0));
 
         VBox titleBox = new VBox(2);
-        Label lblTitle = new Label("CONTROL DE COWORKING");
+        Label lblTitle = new Label("CONTROL DE ESPACIOS");
         lblTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
         lblTitle.setStyle("-fx-text-fill: " + COLOR_TEXT_PRIMARY + ";");
         
@@ -103,7 +103,7 @@ public class VentanaCoworking {
         comboEstado.setMaxWidth(Double.MAX_VALUE);
         comboEstado.setStyle(STYLE_COMBO);
 
-        // NUEVO: Campo para Precio por Hora
+        //Campo para Precio por Hora
         Label lblPrecioHora = new Label("Precio por Hora ($):");
         lblPrecioHora.setStyle(STYLE_LABEL);
         TextField txtPrecioHora = new TextField();
@@ -116,7 +116,7 @@ public class VentanaCoworking {
         lblBadgeVisual.setFont(Font.font("Segoe UI", FontWeight.BOLD, 12));
         lblBadgeVisual.setStyle("-fx-text-fill: #10B981; -fx-background-color: #064E3B; -fx-padding: 4 10; -fx-background-radius: 4;");
 
-        // Distribución en el Grid (Se añadió el precio en la fila 3 y se movió el badge a la 4)
+        //Distribución en el Grid (Se añadió el precio en la fila 3 y se movió el badge a la 4)
         formGrid.add(lblTipo, 0, 0);          formGrid.add(comboTipo, 1, 0);
         formGrid.add(lblCapacidad, 0, 1);     formGrid.add(txtCapacidad, 1, 1);
         formGrid.add(lblEstado, 0, 2);        formGrid.add(comboEstado, 1, 2);
@@ -206,7 +206,7 @@ public class VentanaCoworking {
                 int capacidad = Integer.parseInt(txtCapacidad.getText().trim());
                 double precio = Double.parseDouble(txtPrecioHora.getText().trim());
                 
-                // Constructor corregido de 5 parámetros
+                //Constructor corregido de 5 parámetros
                 Espacio esp = new Espacio(idEspacioSeleccionado, comboTipo.getValue(), capacidad, comboEstado.getValue(), precio);
                 
                 new EspacioDAO().actualizar(esp);

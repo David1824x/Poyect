@@ -15,7 +15,7 @@ import java.sql.*;
 
 public class VentanaReporte {
 
-    // Paleta de diseño RedNova OS
+    //Paleta de diseño RedNova OS
     private final String COLOR_BG = "#121214";
     private final String COLOR_CARD = "#1A1A1E";
     private final String COLOR_ACCENT = "#C3073F";
@@ -26,12 +26,12 @@ public class VentanaReporte {
             = "-fx-background-color: #1A1A1E; -fx-control-inner-background: #1A1A1E; "
             + "-fx-base: #121214; -fx-table-cell-border-color: #27272A; -fx-text-fill: white;";
 
-    // COMPONENTES GLOBALES (Para poder limpiarlos y actualizarlos desde afuera)
+    //COMPONENTES GLOBALES (Para poder limpiarlos y actualizarlos desde afuera)
     private TableView<ReporteVenta> tablaVentas;
     private TableView<ReporteVenta> tablaEspacios;
     private TableView<ReporteVenta> tablaEquipos;
 
-    // Etiquetas de métricas (KPIs) de auditoría
+    //Etiquetas de métricas (KPIs) de auditoría
     private Label lblSubtotalVentas;
     private Label lblSubtotalEspacios;
     private Label lblSubtotalEquipos;
@@ -61,19 +61,19 @@ public class VentanaReporte {
         VBox tablasContainer = new VBox(20);
         tablasContainer.setStyle("-fx-background-color: transparent;");
 
-        // 1. SECCIÓN: VENTAS DE PRODUCTOS
+        //1. SECCIÓN: VENTAS DE PRODUCTOS
         tablaVentas = crearEstructuraTabla("Concepto / Producto");
         lblSubtotalVentas = new Label("Ganancia Ventas: $0.00 MXN");
         lblSubtotalVentas.setStyle("-fx-text-fill: #10B981; -fx-font-weight: bold; -fx-font-size: 12px;");
         VBox boxVentas = construirSeccion("1. CONTROL DE VENTAS EN MOSTRADOR", tablaVentas, lblSubtotalVentas);
 
-        // 2. SECCIÓN: RENTA DE ESPACIOS
+        //2. SECCIÓN: RENTA DE ESPACIOS
         tablaEspacios = crearEstructuraTabla("Espacio Reservado");
         lblSubtotalEspacios = new Label("Ganancia Espacios: $0.00 MXN");
         lblSubtotalEspacios.setStyle("-fx-text-fill: #3B82F6; -fx-font-weight: bold; -fx-font-size: 12px;");
         VBox boxEspacios = construirSeccion("2. RESERVACIONES DE ESPACIOS DE TRABAJO", tablaEspacios, lblSubtotalEspacios);
 
-        // 3. SECCIÓN: RENTA DE EQUIPOS
+        //3. SECCIÓN: RENTA DE EQUIPOS
         tablaEquipos = crearEstructuraTabla("Equipo Informático / Periférico");
         lblSubtotalEquipos = new Label("Ganancia Equipos: $0.00 MXN");
         lblSubtotalEquipos.setStyle("-fx-text-fill: #F59E0B; -fx-font-weight: bold; -fx-font-size: 12px;");
@@ -81,7 +81,7 @@ public class VentanaReporte {
 
         tablasContainer.getChildren().addAll(boxVentas, boxEspacios, boxEquipos);
 
-        // ScrollPane adaptativo
+        //ScrollPane adaptativo
         ScrollPane scrollCuerpo = new ScrollPane(tablasContainer);
         scrollCuerpo.setFitToWidth(true);
         scrollCuerpo.setStyle("-fx-background: #121214; -fx-background-color: transparent; -fx-viewport-background: #121214;");
@@ -112,7 +112,7 @@ public class VentanaReporte {
         HBox buttonBar = new HBox();
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
 
-        // BOTÓN ACTUALIZAR MANUAL (Por si acaso el usuario quiere forzar el refresco)
+        //BOTÓN ACTUALIZAR MANUAL (Por si acaso el usuario quiere forzar el refresco)
         Button btnActualizar = new Button("Actualizar");
         btnActualizar.setStyle("-fx-background-color: #C3073F; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 8 16; -fx-font-weight: bold; -fx-cursor: hand; -fx-margin-right: 10;");
         btnActualizar.setOnAction(e -> refrescarDatos());
@@ -127,14 +127,14 @@ public class VentanaReporte {
         footerBox.getChildren().addAll(cardGananciasFinales, buttonBar);
         mainLayout.setBottom(footerBox);
 
-        // Primera carga inicial al abrir
+        //Primera carga inicial al abrir
         refrescarDatos();
 
         escenarioReporte.setScene(new Scene(mainLayout, 840, 700));
         escenarioReporte.show();
     }
 
-    // MÉTODO PÚBLICO: Cualquier controlador externo con la instancia de esta ventana puede llamarlo
+    //MÉTODO PÚBLICO: Cualquier controlador externo con la instancia de esta ventana puede llamarlo
     public void refrescarDatos() {
         procesarTodoElFlujoFinanciero(this.tablaVentas, this.tablaEspacios, this.tablaEquipos);
     }
@@ -203,9 +203,7 @@ public class VentanaReporte {
                 throw new SQLException("La conexión devuelta por el pool es nula.");
             }
 
-            // =========================================================================
-            // 1. COMPONENTE: VENTAS EN MOSTRADOR
-            // =========================================================================
+            //1. COMPONENTE: VENTAS EN MOSTRADOR
             try {
                 String sqlVentas = "SELECT p.nombreProducto, dv.cantidad, dv.precioAplicado, v.Dia, v.Mes, v.Anio "
                         + "FROM venta v "
@@ -230,9 +228,7 @@ public class VentanaReporte {
             }
             lblSubtotalVentas.setText(String.format("Ganancia Ventas: $%,.2f MXN", subtotales[0]));
 
-            // =========================================================================
-// 2. COMPONENTE: RESERVACIONES DE ESPACIOS
-// =========================================================================
+            //2. COMPONENTE: RESERVACIONES DE ESPACIOS
             try {
 
                 String sqlEspacios
@@ -290,9 +286,7 @@ public class VentanaReporte {
                     )
             );
 
-            // =========================================================================
-// 3. COMPONENTE: RENTA DE EQUIPOS
-// =========================================================================
+            //3. COMPONENTE: RENTA DE EQUIPOS
             try {
 
                 String sqlEquipos
@@ -351,9 +345,7 @@ public class VentanaReporte {
                     )
             );
 
-            // =========================================================================
             // 4. GRAN TOTAL FINANCIERO CONSOLIDADO
-            // =========================================================================
             double gananciasFinales = subtotales[0] + subtotales[1] + subtotales[2];
             lblGananciasFinales.setText(String.format("$%,.2f MXN", gananciasFinales));
 

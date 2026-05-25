@@ -14,7 +14,7 @@ import java.util.List;
 
 public class VentanaProductos {
 
-    // Paleta de colores institucional (RedNova Dark Premium)
+    //Paleta de colores institucional (RedNova Dark Premium)
     private final String COLOR_BG = "#121214";
     private final String COLOR_CARD = "#1A1A1E";
     private final String COLOR_INPUT = "#26262B";
@@ -24,10 +24,10 @@ public class VentanaProductos {
     private final String COLOR_TEXT_PRIMARY = "#FFFFFF";
     private final String COLOR_TEXT_MUTED = "#A0A0A5";
 
-    //comentario Variable interna para recordar que ID de producto se encuentra en edicion o baja activa
+    //Variable interna para recordar que ID de producto se encuentra en edicion o baja activa
     private int idProductoSeleccionado = 0;
 
-    // Reglas CSS para componentes homogéneos
+    //Reglas CSS para componentes homogéneos
     private final String STYLE_INPUT = String.format(
         "-fx-background-color: %s; -fx-text-fill: %s; -fx-border-color: #3F3F46; " +
         "-fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 10; -fx-font-size: 13px;",
@@ -83,7 +83,7 @@ public class VentanaProductos {
         formGrid.setPadding(new Insets(20));
         formGrid.setStyle(String.format("-fx-background-color: %s; -fx-background-radius: 6; -fx-border-color: #27272A; -fx-border-radius: 6;", COLOR_CARD));
 
-        // Componentes del Formulario
+        //Componentes del Formulario
         Label lblNombre = new Label("Nombre del Producto:");
         lblNombre.setStyle(STYLE_LABEL);
         TextField txtNombre = new TextField();
@@ -98,7 +98,7 @@ public class VentanaProductos {
         comboCategoria.setPromptText("Seleccionar...");
         comboCategoria.setMaxWidth(Double.MAX_VALUE);
         
-        //comentario Se inyecta -fx-base y -fx-control-inner-background para forzar que la lista desplegable interna sea oscura y el texto blanco
+        //Se inyecta -fx-base y -fx-control-inner-background para forzar que la lista desplegable interna sea oscura y el texto blanco
         comboCategoria.setStyle(STYLE_INPUT + " -fx-background-color: " + COLOR_INPUT + "; -fx-base: " + COLOR_INPUT + "; -fx-control-inner-background: " + COLOR_INPUT + ";");
 
         Label lblPrecio = new Label("Precio Público ($):");
@@ -125,7 +125,7 @@ public class VentanaProductos {
         txtMinimo.setPromptText("Alerta de reabastecimiento");
         txtMinimo.setStyle(STYLE_INPUT);
 
-        // Registro en la cuadrícula (Columna, Fila)
+        //Registro en la cuadrícula (Columna, Fila)
         formGrid.add(lblNombre, 0, 0);     formGrid.add(txtNombre, 1, 0);
         formGrid.add(lblCategoria, 0, 1);  formGrid.add(comboCategoria, 1, 1);
         formGrid.add(lblPrecio, 0, 2);     formGrid.add(txtPrecio, 1, 2);
@@ -163,17 +163,17 @@ public class VentanaProductos {
 
         // --- ACCIONES DE LÓGICA ---
 
-        // Buscar todos
+        //Buscar todos
         btnBuscar.setOnAction(e -> {
             try {
-                //comentario Trae la lista completa de productos desde la base de datos MySQL
+                //Trae la lista completa de productos desde la base de datos MySQL
                 List<Producto> lista = new ProductoDAO().buscarTodos();
                 if (lista.isEmpty()) {
                     new Alert(Alert.AlertType.INFORMATION, "No existen productos registrados en el inventario.").show();
                     return;
                 }
                 
-                //comentario Invoca el catalogo general y mapea la fila elegida directamente al formulario
+                //Invoca el catalogo general y mapea la fila elegida directamente al formulario
                 Consultas.verProductos(lista, p -> {
                     idProductoSeleccionado = p.getIdProducto();
                     txtNombre.setText(p.getNombreProducto());
@@ -188,7 +188,7 @@ public class VentanaProductos {
             }
         });
 
-        // Guardar Nuevo
+        //Guardar Nuevo
         btnGuardar.setOnAction(e -> {
             try {
                 Producto p = new Producto(
@@ -201,11 +201,11 @@ public class VentanaProductos {
                     Integer.parseInt(txtMinimo.getText().trim())
                 );
                 
-                //comentario Inserta el objeto Producto en la base de datos
+                //Inserta el objeto Producto en la base de datos
                 new ProductoDAO().insertar(p);
                 new Alert(Alert.AlertType.INFORMATION, "Registro consolidado con éxito.").show();
                 
-                //comentario Limpia los campos post-registro para un nuevo ingreso
+                //Limpia los campos post-registro para un nuevo ingreso
                 txtNombre.clear(); comboCategoria.setValue(null);
                 txtPrecio.clear(); txtCosto.clear(); txtStock.clear(); txtMinimo.clear();
                 idProductoSeleccionado = 0;
@@ -214,10 +214,10 @@ public class VentanaProductos {
             }
         });
 
-        // Actualizar
+        //Actualizar
         btnActualizar.setOnAction(e -> {
             try {
-                //comentario Valida que primero se haya buscado y seleccionado un producto de la tabla
+                //Valida que primero se haya buscado y seleccionado un producto de la tabla
                 if(idProductoSeleccionado == 0) {
                     new Alert(Alert.AlertType.WARNING, "Primero presione 'Buscar Productos' y elija un registro con doble clic.").show();
                     return;
@@ -232,7 +232,7 @@ public class VentanaProductos {
                     Integer.parseInt(txtMinimo.getText().trim())
                 );
                 
-                //comentario Actualiza los datos en la base de datos
+                //Actualiza los datos en la base de datos
                 new ProductoDAO().actualizar(p);
                 new Alert(Alert.AlertType.INFORMATION, "Información del producto actualizada correctamente.").show();
             } catch (Exception ex) { 
@@ -240,10 +240,10 @@ public class VentanaProductos {
             }
         });
 
-        // Eliminar
+        //Eliminar
         btnEliminar.setOnAction(e -> {
             try {
-                //comentario Valida que exista una seleccion valida para proceder a borrar en la base de datos
+                //Valida que exista una seleccion valida para proceder a borrar en la base de datos
                 if(idProductoSeleccionado == 0) {
                     new Alert(Alert.AlertType.WARNING, "Primero presione 'Buscar Productos' y seleccione el ítem que dará de baja.").show();
                     return;
@@ -254,16 +254,16 @@ public class VentanaProductos {
                 confirmacion.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.YES) {
                         try {
-                            //comentario Ejecuta la instrucción DELETE en la base de datos usando el ID seleccionado
+                            //Ejecuta la instrucción DELETE en la base de datos usando el ID seleccionado
                             new ProductoDAO().eliminar(idProductoSeleccionado);
                             new Alert(Alert.AlertType.INFORMATION, "El ítem ha sido removido del almacén.").show();
                             
-                            //comentario Limpieza de campos post-eliminación
+                            //Limpieza de campos post-eliminación
                             txtNombre.clear(); comboCategoria.setValue(null);
                             txtPrecio.clear(); txtCosto.clear(); txtStock.clear(); txtMinimo.clear();
                             idProductoSeleccionado = 0;
                         } catch (Exception daoEx) {
-                            //comentario Atrapa el error de la base de datos si el producto ya fue vendido y tiene conexion con DetalleVenta
+                            //Atrapa el error de la base de datos si el producto ya fue vendido y tiene conexion con DetalleVenta
                             new Alert(Alert.AlertType.ERROR, "Error en el proceso de baja. El producto tiene un registro en las ventas y no puede ser eliminado.\nDetalle: " + daoEx.getMessage()).show();
                         }
                     }

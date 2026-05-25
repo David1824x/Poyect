@@ -15,7 +15,7 @@ import java.util.List;
 
 public class VentanaUsuarios {
 
-    // Paleta de colores unificada de RedNova OS
+    //Paleta de colores unificada de RedNova OS
     private final String COLOR_BG = "#121214";
     private final String COLOR_CARD = "#1A1A1E";
     private final String COLOR_INPUT = "#26262B";
@@ -27,14 +27,14 @@ public class VentanaUsuarios {
 
     private int idUsuarioSeleccionado = 0;
 
-    // CSS Estructural Reutilizable
+    //CSS Estructural Reutilizable
     private final String STYLE_INPUT = String.format(
         "-fx-background-color: %s; -fx-text-fill: %s; -fx-border-color: #3F3F46; " +
         "-fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 6 10; -fx-font-size: 13px;",
         COLOR_INPUT, COLOR_TEXT_PRIMARY
     );
 
-    //comentario Regla CSS extendida para forzar modo oscuro en ComboBoxes
+    //Regla CSS extendida para forzar modo oscuro en ComboBoxes
     private final String STYLE_COMBO = STYLE_INPUT + " -fx-base: " + COLOR_INPUT + "; -fx-control-inner-background: " + COLOR_INPUT + ";";
 
     private final String STYLE_LABEL = String.format(
@@ -43,7 +43,7 @@ public class VentanaUsuarios {
 
     public void mostrar() {
         Stage stage = new Stage();
-        stage.setTitle("RedNova OS - Padrón de Usuarios");
+        stage.setTitle("RedNova OS - Usuarios");
 
         BorderPane mainLayout = new BorderPane();
         mainLayout.setStyle("-fx-background-color: " + COLOR_BG + ";");
@@ -53,7 +53,7 @@ public class VentanaUsuarios {
         headerBox.setPadding(new Insets(0, 0, 16, 0));
 
         VBox titleBox = new VBox(2);
-        Label lblTitle = new Label("PADRÓN DE USUARIOS");
+        Label lblTitle = new Label("USUARIOS");
         lblTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
         lblTitle.setStyle("-fx-text-fill: " + COLOR_TEXT_PRIMARY + ";");
         
@@ -159,7 +159,6 @@ public class VentanaUsuarios {
             } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage()).show(); }
         });
 
-        // ... (restos de botones igual que antes)
         btnRegistrar.setOnAction(e -> {
             try {
                 Usuario u = new Usuario(0, txtNumControl.getText().trim(), txtCorreo.getText().trim(), 

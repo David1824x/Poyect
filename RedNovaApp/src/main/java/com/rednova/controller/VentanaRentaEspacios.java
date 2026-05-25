@@ -65,7 +65,7 @@ public class VentanaRentaEspacios {
         formGrid.setHgap(15); formGrid.setVgap(14); formGrid.setPadding(new Insets(22));
         formGrid.setStyle(String.format("-fx-background-color: %s; -fx-background-radius: 6; -fx-border-color: #27272A; -fx-border-radius: 6;", COLOR_CARD));
 
-        // ID Usuario y Nombre reactivo
+        //ID Usuario y Nombre reactivo
         Label lblUsuarioId = new Label("ID Usuario:");
         lblUsuarioId.setStyle(STYLE_LABEL);
         TextField txtUsuarioId = new TextField();
@@ -76,13 +76,13 @@ public class VentanaRentaEspacios {
         Label lblNombreClienteValor = new Label("---");
         lblNombreClienteValor.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-style: italic;");
 
-        // Nuevo campo: ID Espacio
+        //Nuevo campo: ID Espacio
         Label lblIdEspacio = new Label("ID Espacio:");
         lblIdEspacio.setStyle(STYLE_LABEL);
         TextField txtIdEspacio = new TextField();
         txtIdEspacio.setStyle(STYLE_INPUT);
 
-        // ComboBox Espacios
+        //ComboBox Espacios
         Label lblEspacio = new Label("Seleccionar Espacio:");
         lblEspacio.setStyle(STYLE_LABEL);
         ComboBox<Espacio> comboEspacio = new ComboBox<>();
@@ -112,7 +112,7 @@ public class VentanaRentaEspacios {
         }
 
         // --- LÓGICA DE SINCRONIZACIÓN ID <-> COMBO ---
-        // 1. Al escribir ID y dar Enter: busca el espacio
+        //1. Al escribir ID y dar Enter: busca el espacio
         txtIdEspacio.setOnAction(e -> {
             try {
                 int idBuscado = Integer.parseInt(txtIdEspacio.getText().trim());
@@ -125,20 +125,20 @@ public class VentanaRentaEspacios {
             } catch (NumberFormatException ex) { /* Ignorar entrada inválida */ }
         });
 
-        // 2. Al seleccionar en el combo: llena el campo ID
+        //2. Al seleccionar en el combo: llena el campo ID
         comboEspacio.setOnAction(e -> {
             if (comboEspacio.getValue() != null) {
                 txtIdEspacio.setText(String.valueOf(comboEspacio.getValue().getIdEspacio()));
             }
         });
 
-        // Horas de uso
+        //Horas de uso
         Label lblHoras = new Label("Horas de Reserva:");
         lblHoras.setStyle(STYLE_LABEL);
         TextField txtHoras = new TextField();
         txtHoras.setStyle(STYLE_INPUT);
 
-        // Puntos de Lealtad
+        //Puntos de Lealtad
         Label lblPuntosTexto = new Label("Descuento Puntos:");
         lblPuntosTexto.setStyle(STYLE_LABEL);
         HBox puntosContainer = new HBox(10);
@@ -150,7 +150,7 @@ public class VentanaRentaEspacios {
         lblPuntosDisponiblesValor.setStyle("-fx-text-fill: " + COLOR_TEXT_MUTED + "; -fx-font-size: 12px;");
         puntosContainer.getChildren().addAll(txtPuntosCanjear, lblPuntosDisponiblesValor);
 
-        // Costo Final
+        //Costo Final
         Label lblTotalTexto = new Label("Monto Asignado:");
         lblTotalTexto.setStyle(STYLE_LABEL);
         Label lblTotalDinero = new Label("$0.00");
@@ -198,7 +198,7 @@ public class VentanaRentaEspacios {
         comboEspacio.valueProperty().addListener((o, old, n) -> calcularTotalDinamico.run());
         txtPuntosCanjear.textProperty().addListener((o, old, n) -> calcularTotalDinamico.run());
 
-        // Escuchador del Usuario
+        //Escuchador del Usuario
         txtUsuarioId.textProperty().addListener((o, old, nuevoId) -> {
             String idLimpio = nuevoId.trim();
             if (idLimpio.isEmpty()) {
@@ -233,7 +233,7 @@ public class VentanaRentaEspacios {
         footerBox.getChildren().addAll(btnCancelar, btnRegistrar);
         mainLayout.setBottom(footerBox);
 
-        // Registro final
+        //Registro final
         btnRegistrar.setOnAction(e -> {
 
     try {

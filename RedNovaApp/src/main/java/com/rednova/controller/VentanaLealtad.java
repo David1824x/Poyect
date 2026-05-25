@@ -27,11 +27,11 @@ public class VentanaLealtad {
         Button btnConsultar = new Button("Consultar Puntos");
         Button btnCanjear = new Button("Canjear 100 Puntos ($50 desc)");
         
-        // Estilos
+        //Estilos
         btnConsultar.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
         btnCanjear.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;");
 
-        // Acción Consultar
+        //Acción Consultar
         btnConsultar.setOnAction(e -> {
             try {
                 int id = Integer.parseInt(txtIdUsuario.getText());
@@ -44,7 +44,7 @@ public class VentanaLealtad {
             } catch(Exception ex) { lblInfo.setText("Error: ID inválido."); }
         });
 
-        // Acción Canjear
+        //Acción Canjear
         btnCanjear.setOnAction(e -> {
             try {
                 int id = Integer.parseInt(txtIdUsuario.getText());

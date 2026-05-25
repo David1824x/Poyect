@@ -3,12 +3,12 @@ package com.rednova.dao;
 import com.rednova.model.Producto;
 import com.rednova.util.Conexion;
 import java.sql.*;
-import java.util.ArrayList; //comentario Importacion necesaria para crear la lista de productos
-import java.util.List;      //comentario Importacion necesaria para manejar la lista en la interfaz
+import java.util.ArrayList; 
+import java.util.List;      
 
 public class ProductoDAO {
 
-    // Buscar por ID (El método que te causaba el error)
+    //Buscar por ID 
     public Producto buscarPorId(int id) throws SQLException {
         String sql = "SELECT * FROM Producto WHERE idProducto = ?";
         try (Connection conn = Conexion.conectar();
@@ -30,7 +30,7 @@ public class ProductoDAO {
         return null;
     }
 
-    //comentario Nuevo metodo que recupera todos los productos de la base de datos para mostrarlos en la tabla flotante
+    //Nuevo metodo que recupera todos los productos de la base de datos para mostrarlos en la tabla flotante
     public List<Producto> buscarTodos() throws SQLException {
         List<Producto> lista = new ArrayList<>();
         String sql = "SELECT * FROM Producto";
@@ -68,7 +68,6 @@ public class ProductoDAO {
     }
 
     public void actualizar(Producto p) throws SQLException {
-        //comentario Se ajusto el query SQL para incluir categoria, costoUnitario y stockMinimo que faltaban por actualizar
         String sql = "UPDATE Producto SET nombreProducto = ?, categoria = ?, precioUnitario = ?, costoUnitario = ?, stockActual = ?, stockMinimo = ? WHERE idProducto = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, p.getNombreProducto());

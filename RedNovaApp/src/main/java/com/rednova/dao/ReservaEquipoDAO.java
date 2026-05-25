@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ReservaEquipoDAO {
 
-    // REGISTRAR RENTA
+    //REGISTRAR RENTA
     public void registrar(ReservaEquipo r) throws SQLException {
 
         String sql = "INSERT INTO reserva_equipo " +
@@ -29,7 +29,7 @@ public class ReservaEquipoDAO {
         }
     }
 
-    // BUSCAR TODAS LAS RENTAS
+    //BUSCAR TODAS LAS RENTAS
     public List<ReservaEquipo> buscarTodos() throws SQLException {
 
         List<ReservaEquipo> lista = new ArrayList<>();
@@ -58,7 +58,7 @@ public class ReservaEquipoDAO {
         return lista;
     }
 
-    // CONSULTA MÚLTIPLE JOIN
+    //CONSULTA MÚLTIPLE JOIN
     public void imprimirReporteRentas() throws SQLException {
 
         String sql =

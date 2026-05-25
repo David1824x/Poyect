@@ -15,7 +15,7 @@ import java.util.List;
 
 public class VentanaRenta {
 
-    // Paleta de colores unificada de RedNova OS
+    //Paleta de colores unificada de RedNova OS
     private final String COLOR_BG = "#121214";
     private final String COLOR_CARD = "#1A1A1E";
     private final String COLOR_INPUT = "#26262B";
@@ -33,7 +33,7 @@ public class VentanaRenta {
             COLOR_INPUT, COLOR_TEXT_PRIMARY
     );
 
-    //comentario Regla CSS extendida para forzar modo oscuro en listas desplegables (ComboBox)
+    //Regla CSS extendida para forzar modo oscuro en listas desplegables (ComboBox)
     private final String STYLE_COMBO = STYLE_INPUT + " -fx-base: " + COLOR_INPUT + "; -fx-control-inner-background: " + COLOR_INPUT + ";";
 
     private final String STYLE_LABEL = String.format(

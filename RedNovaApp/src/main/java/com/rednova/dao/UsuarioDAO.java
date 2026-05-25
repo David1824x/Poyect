@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UsuarioDAO {
 
-    // 1. REGISTRAR USUARIO (C - Create)
+    //1. REGISTRAR USUARIO 
     public void registrar(Usuario u) throws SQLException {
         String sql = "INSERT INTO Usuario (numeroControl, correoInstitucional, nombre, tipoUsuario, fechaRegistro, puntosLealtad, nivelMembresia) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = Conexion.conectar();
@@ -24,7 +24,7 @@ public class UsuarioDAO {
         }
     }
 
-    // 2. BUSCAR TODOS (R - Read)
+    //2. BUSCAR TODOS 
     public List<Usuario> buscarTodos() throws SQLException {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM Usuario";
@@ -47,7 +47,7 @@ public class UsuarioDAO {
         return lista;
     }
 
-    // 3. BUSCAR POR ID (Para editar o consultar puntos)
+    //3. BUSCAR POR ID 
     public Usuario buscarPorId(int id) throws SQLException {
         String sql = "SELECT * FROM Usuario WHERE idUsuario = ?";
         try (Connection conn = Conexion.conectar();
@@ -70,7 +70,7 @@ public class UsuarioDAO {
         return null;
     }
 
-    // 4. ACTUALIZAR (U - Update)
+    //4. ACTUALIZAR 
     public void actualizar(Usuario u) throws SQLException {
         String sql = "UPDATE Usuario SET nombre = ?, tipoUsuario = ?, puntosLealtad = ?, nivelMembresia = ? WHERE idUsuario = ?";
         try (Connection conn = Conexion.conectar();
@@ -84,7 +84,7 @@ public class UsuarioDAO {
         }
     }
 
-    // 5. ELIMINAR (D - Delete)
+    //5. ELIMINAR 
     public void eliminar(int id) throws SQLException {
         String sql = "DELETE FROM Usuario WHERE idUsuario = ?";
         try (Connection conn = Conexion.conectar();

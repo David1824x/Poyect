@@ -3,16 +3,16 @@ package com.rednova.model;
 public class Espacio {
     
     private int idEspacio;
-    private String tipoEspacio;      // Cubículo Individual, Sala Grupal, Área Lounge, etc.
-    private int capacidadPersonas;   // Cantidad máxima de usuarios admitidos
-    private String estado;           // Disponible, Ocupado, Mantenimiento
-    private double precioHora;       // Costo de renta por hora (Añadido)
+    private String tipoEspacio;      //Cubículo Individual, Sala Grupal, Área Lounge, etc.
+    private int capacidadPersonas;   //Cantidad máxima de usuarios admitidos
+    private String estado;           //Disponible, Ocupado, Mantenimiento
+    private double precioHora;       //Costo de renta por hora (Añadido)
 
-    // Constructor vacío por buenas prácticas
+    //Constructor vacío por buenas prácticas
     public Espacio() {
     }
 
-    // Constructor completo para mapeo del DAO (Actualizado con precioHora)
+    //Constructor completo para mapeo del DAO 
     public Espacio(int idEspacio, String tipoEspacio, int capacidadPersonas, String estado, double precioHora) {
         this.idEspacio = idEspacio;
         this.tipoEspacio = tipoEspacio;
@@ -21,9 +21,7 @@ public class Espacio {
         this.precioHora = precioHora;
     }
 
-    // ==========================================
-    //          GETTERS Y SETTERS
-    // ==========================================
+    //GETTERS Y SETTERS
 
     public int getIdEspacio() {
         return idEspacio;
@@ -65,9 +63,7 @@ public class Espacio {
         this.precioHora = precioHora;
     }
 
-    // ==========================================
-    //          MÉTODO TOSTRING
-    // ==========================================
+    //MÉTODO TOSTRING
 
     @Override
     public String toString() {

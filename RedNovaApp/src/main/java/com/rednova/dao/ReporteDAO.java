@@ -4,7 +4,6 @@ import com.rednova.util.Conexion;
 import java.sql.*;
 
 public class ReporteDAO {
-    // Este método cumple el requisito de "Consulta Múltiple (* join)"
     public void imprimirReporteVentas() throws SQLException {
         String sql = "SELECT V.idVenta, U.nombre AS Cliente, P.nombreProducto, DV.cantidad, V.total " +
                      "FROM Venta V " +

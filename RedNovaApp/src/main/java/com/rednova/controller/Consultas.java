@@ -111,7 +111,7 @@ public class Consultas {
     //comentario Metodo para mostrar Equipos y su tarifa por hora (Modificado)
     public static void verEquipos(List<EquipoTecnologico> lista, Consumer<EquipoTecnologico> alSeleccionar) {
         Stage stage = new Stage();
-        stage.setTitle("Control de Hardware - RedNova");
+        stage.setTitle("Control de equipos - RedNova");
 
         TableView<EquipoTecnologico> tabla = new TableView<>();
         tabla.setStyle(STYLE_TABLE);
@@ -150,7 +150,7 @@ public class Consultas {
     //comentario Metodo para mostrar Espacios
     public static void verEspacios(List<Espacio> lista, Consumer<Espacio> alSeleccionar) {
         Stage stage = new Stage();
-        stage.setTitle("Infraestructura Coworking - RedNova");
+        stage.setTitle("Control de espacios - RedNova");
 
         TableView<Espacio> tabla = new TableView<>();
         tabla.setStyle(STYLE_TABLE);
