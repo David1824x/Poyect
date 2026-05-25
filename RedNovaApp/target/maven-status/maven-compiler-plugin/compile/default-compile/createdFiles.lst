@@ -1,13 +1,16 @@
+com\rednova\controller\VentanaRentaEquipos.class
 com\rednova\dao\VentaDAO.class
 com\rednova\model\ReporteVenta.class
 com\rednova\controller\VentanaUsuarios.class
 com\rednova\controller\Consultas.class
 com\rednova\controller\ReporteVenta.class
 com\rednova\dao\ProductoDAO.class
+com\rednova\controller\VentanaRentaEspacios.class
 com\rednova\rednovaapp\App.class
 module-info.class
 com\rednova\dao\LealtadDAO.class
 com\rednova\controller\VentanaRenta.class
+com\rednova\controller\VentanaRentaEspacios$1.class
 com\rednova\controller\VentanaVentas.class
 com\rednova\controller\VentanaReporte.class
 com\rednova\dao\ReporteDAO.class
@@ -17,6 +20,7 @@ com\rednova\model\Espacio.class
 com\rednova\dao\EspacioDAO.class
 com\rednova\dao\UsuarioDAO.class
 com\rednova\controller\VentanaCoworking.class
+com\rednova\controller\VentanaRentaEquipos$1.class
 com\rednova\model\EquipoTecnologico.class
 com\rednova\util\Conexion.class
 com\rednova\model\Usuario.class

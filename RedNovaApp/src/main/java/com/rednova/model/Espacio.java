@@ -6,17 +6,19 @@ public class Espacio {
     private String tipoEspacio;      // Cubículo Individual, Sala Grupal, Área Lounge, etc.
     private int capacidadPersonas;   // Cantidad máxima de usuarios admitidos
     private String estado;           // Disponible, Ocupado, Mantenimiento
+    private double precioHora;       // Costo de renta por hora (Añadido)
 
     // Constructor vacío por buenas prácticas
     public Espacio() {
     }
 
-    // Constructor completo para mapeo del DAO
-    public Espacio(int idEspacio, String tipoEspacio, int capacidadPersonas, String estado) {
+    // Constructor completo para mapeo del DAO (Actualizado con precioHora)
+    public Espacio(int idEspacio, String tipoEspacio, int capacidadPersonas, String estado, double precioHora) {
         this.idEspacio = idEspacio;
         this.tipoEspacio = tipoEspacio;
         this.capacidadPersonas = capacidadPersonas;
         this.estado = estado;
+        this.precioHora = precioHora;
     }
 
     // ==========================================
@@ -28,7 +30,7 @@ public class Espacio {
     }
 
     public void setIdEspacio(int idEspacio) {
-        this.idEspacio = idEspacio;
+        idEspacio = idEspacio;
     }
 
     public String getTipoEspacio() {
@@ -55,6 +57,18 @@ public class Espacio {
         this.estado = estado;
     }
 
+    public double getPrecioHora() {
+        return precioHora;
+    }
+
+    public void setPrecioHora(double precioHora) {
+        this.precioHora = precioHora;
+    }
+
+    // ==========================================
+    //          MÉTODO TOSTRING
+    // ==========================================
+
     @Override
     public String toString() {
         return "Espacio{" +
@@ -62,6 +76,7 @@ public class Espacio {
                 ", tipoEspacio='" + tipoEspacio + '\'' +
                 ", capacidadPersonas=" + capacidadPersonas +
                 ", estado='" + estado + '\'' +
+                ", precioHora=" + precioHora +
                 '}';
     }
 }

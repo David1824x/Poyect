@@ -19,12 +19,11 @@ public class VentanaCoworking {
     private final String COLOR_CARD = "#1A1A1E";
     private final String COLOR_INPUT = "#26262B";
     private final String COLOR_ACCENT = "#C3073F";
-    private final String COLOR_ACCENT_HOVER = "#950530";
     private final String COLOR_DANGER = "#EF4444";
     private final String COLOR_TEXT_PRIMARY = "#FFFFFF";
     private final String COLOR_TEXT_MUTED = "#A0A0A5";
 
-    //comentario Variable de control interna
+    // Variable de control interna
     private int idEspacioSeleccionado = 0;
 
     // Estilos CSS Reutilizables
@@ -34,12 +33,8 @@ public class VentanaCoworking {
         COLOR_INPUT, COLOR_TEXT_PRIMARY
     );
 
-    //comentario Regla CSS extendida para forzar modo oscuro en ComboBoxes
     private final String STYLE_COMBO = STYLE_INPUT + " -fx-base: " + COLOR_INPUT + "; -fx-control-inner-background: " + COLOR_INPUT + ";";
-
-    private final String STYLE_LABEL = String.format(
-        "-fx-text-fill: %s; -fx-font-size: 13px; -fx-font-weight: bold;", COLOR_TEXT_MUTED
-    );
+    private final String STYLE_LABEL = String.format("-fx-text-fill: %s; -fx-font-size: 13px; -fx-font-weight: bold;", COLOR_TEXT_MUTED);
 
     public void mostrar() {
         Stage stage = new Stage();
@@ -49,6 +44,7 @@ public class VentanaCoworking {
         mainLayout.setStyle("-fx-background-color: " + COLOR_BG + ";");
         mainLayout.setPadding(new Insets(24));
 
+        // --- HEADER ---
         VBox headerBox = new VBox(12);
         headerBox.setPadding(new Insets(0, 0, 16, 0));
 
@@ -76,6 +72,7 @@ public class VentanaCoworking {
         headerBox.getChildren().addAll(titleBox, searchBar);
         mainLayout.setTop(headerBox);
 
+        // --- FORMULARIO ---
         GridPane formGrid = new GridPane();
         formGrid.setHgap(15);
         formGrid.setVgap(12);
@@ -89,7 +86,7 @@ public class VentanaCoworking {
         ));
         comboTipo.setPromptText("Seleccionar...");
         comboTipo.setMaxWidth(Double.MAX_VALUE);
-        comboTipo.setStyle(STYLE_COMBO); //comentario Estilo aplicado
+        comboTipo.setStyle(STYLE_COMBO);
 
         Label lblCapacidad = new Label("Capacidad Máxima:");
         lblCapacidad.setStyle(STYLE_LABEL);
@@ -104,7 +101,14 @@ public class VentanaCoworking {
         ));
         comboEstado.setValue("Disponible");
         comboEstado.setMaxWidth(Double.MAX_VALUE);
-        comboEstado.setStyle(STYLE_COMBO); //comentario Estilo aplicado
+        comboEstado.setStyle(STYLE_COMBO);
+
+        // NUEVO: Campo para Precio por Hora
+        Label lblPrecioHora = new Label("Precio por Hora ($):");
+        lblPrecioHora.setStyle(STYLE_LABEL);
+        TextField txtPrecioHora = new TextField();
+        txtPrecioHora.setPromptText("Costo por hora de uso");
+        txtPrecioHora.setStyle(STYLE_INPUT);
 
         Label lblBadgeTexto = new Label("Disponibilidad:");
         lblBadgeTexto.setStyle(STYLE_LABEL);
@@ -112,17 +116,19 @@ public class VentanaCoworking {
         lblBadgeVisual.setFont(Font.font("Segoe UI", FontWeight.BOLD, 12));
         lblBadgeVisual.setStyle("-fx-text-fill: #10B981; -fx-background-color: #064E3B; -fx-padding: 4 10; -fx-background-radius: 4;");
 
+        // Distribución en el Grid (Se añadió el precio en la fila 3 y se movió el badge a la 4)
         formGrid.add(lblTipo, 0, 0);          formGrid.add(comboTipo, 1, 0);
         formGrid.add(lblCapacidad, 0, 1);     formGrid.add(txtCapacidad, 1, 1);
         formGrid.add(lblEstado, 0, 2);        formGrid.add(comboEstado, 1, 2);
-        formGrid.add(lblBadgeTexto, 0, 3);    formGrid.add(lblBadgeVisual, 1, 3);
+        formGrid.add(lblPrecioHora, 0, 3);    formGrid.add(txtPrecioHora, 1, 3);
+        formGrid.add(lblBadgeTexto, 0, 4);    formGrid.add(lblBadgeVisual, 1, 4);
 
         ColumnConstraints col1 = new ColumnConstraints(140);
         ColumnConstraints col2 = new ColumnConstraints(230);
         formGrid.getColumnConstraints().addAll(col1, col2);
         mainLayout.setCenter(formGrid);
 
-        // --- Lógica del Listener para color del Badge ---
+        // --- Listener para color del Badge ---
         comboEstado.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 lblBadgeVisual.setText(newVal.toUpperCase());
@@ -149,7 +155,7 @@ public class VentanaCoworking {
         footerBox.getChildren().addAll(btnEliminar, btnActualizar, btnRegistrar);
         mainLayout.setBottom(footerBox);
 
-        // --- MANEJO DE ACCIONES ---
+        // --- MANEJO DE ACCIONES CORREGIDO ---
         btnBuscar.setOnAction(e -> {
             try {
                 List<Espacio> lista = new EspacioDAO().buscarTodos();
@@ -159,34 +165,67 @@ public class VentanaCoworking {
                     comboTipo.setValue(esp.getTipoEspacio());
                     txtCapacidad.setText(String.valueOf(esp.getCapacidadPersonas()));
                     comboEstado.setValue(esp.getEstado());
+                    txtPrecioHora.setText(String.valueOf(esp.getPrecioHora())); // Carga el precio en la interfaz
                 });
             } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage()).show(); }
         });
 
         btnRegistrar.setOnAction(e -> {
             try {
-                Espacio esp = new Espacio(0, comboTipo.getValue(), Integer.parseInt(txtCapacidad.getText().trim()), comboEstado.getValue());
+                if (comboTipo.getValue() == null || txtCapacidad.getText().isEmpty() || txtPrecioHora.getText().isEmpty()) {
+                    new Alert(Alert.AlertType.WARNING, "Por favor complete todos los campos.").show();
+                    return;
+                }
+                
+                int capacidad = Integer.parseInt(txtCapacidad.getText().trim());
+                double precio = Double.parseDouble(txtPrecioHora.getText().trim());
+                
+                // Constructor corregido de 5 parámetros
+                Espacio esp = new Espacio(0, comboTipo.getValue(), capacidad, comboEstado.getValue(), precio);
+                
                 new EspacioDAO().registrar(esp);
-                new Alert(Alert.AlertType.INFORMATION, "Registrado.").show();
-                comboTipo.setValue(null); txtCapacidad.clear(); comboEstado.setValue("Disponible"); idEspacioSeleccionado = 0;
-            } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage()).show(); }
+                new Alert(Alert.AlertType.INFORMATION, "Espacio registrado con éxito.").show();
+                
+                // Limpieza de campos
+                comboTipo.setValue(null); txtCapacidad.clear(); txtPrecioHora.clear(); comboEstado.setValue("Disponible"); idEspacioSeleccionado = 0;
+            } catch (NumberFormatException ex) { 
+                new Alert(Alert.AlertType.ERROR, "Capacidad y Precio deben ser valores numéricos válidos.").show(); 
+            } catch (Exception ex) { 
+                new Alert(Alert.AlertType.ERROR, "Error al registrar: " + ex.getMessage()).show(); 
+            }
         });
 
         btnActualizar.setOnAction(e -> {
             try {
-                if(idEspacioSeleccionado == 0) { new Alert(Alert.AlertType.WARNING, "Seleccione un espacio primero.").show(); return; }
-                Espacio esp = new Espacio(idEspacioSeleccionado, comboTipo.getValue(), Integer.parseInt(txtCapacidad.getText().trim()), comboEstado.getValue());
+                if (idEspacioSeleccionado == 0) { new Alert(Alert.AlertType.WARNING, "Seleccione un espacio primero.").show(); return; }
+                if (comboTipo.getValue() == null || txtCapacidad.getText().isEmpty() || txtPrecioHora.getText().isEmpty()) {
+                    new Alert(Alert.AlertType.WARNING, "Campos vacíos detectados.").show();
+                    return;
+                }
+                
+                int capacidad = Integer.parseInt(txtCapacidad.getText().trim());
+                double precio = Double.parseDouble(txtPrecioHora.getText().trim());
+                
+                // Constructor corregido de 5 parámetros
+                Espacio esp = new Espacio(idEspacioSeleccionado, comboTipo.getValue(), capacidad, comboEstado.getValue(), precio);
+                
                 new EspacioDAO().actualizar(esp);
-                new Alert(Alert.AlertType.INFORMATION, "Actualizado.").show();
-            } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Error al actualizar.").show(); }
+                new Alert(Alert.AlertType.INFORMATION, "Espacio actualizado de manera correcta.").show();
+            } catch (NumberFormatException ex) { 
+                new Alert(Alert.AlertType.ERROR, "Verifique que los valores numéricos sean correctos.").show(); 
+            } catch (Exception ex) { 
+                new Alert(Alert.AlertType.ERROR, "Error al actualizar: " + ex.getMessage()).show(); 
+            }
         });
 
         btnEliminar.setOnAction(e -> {
             try {
-                if(idEspacioSeleccionado == 0) { new Alert(Alert.AlertType.WARNING, "Seleccione un espacio primero.").show(); return; }
+                if (idEspacioSeleccionado == 0) { new Alert(Alert.AlertType.WARNING, "Seleccione un espacio primero.").show(); return; }
                 new EspacioDAO().eliminar(idEspacioSeleccionado);
                 new Alert(Alert.AlertType.INFORMATION, "Removido.").show();
-                idEspacioSeleccionado = 0; comboTipo.setValue(null); txtCapacidad.clear(); comboEstado.setValue("Disponible");
+                
+                // Limpieza de campos post-eliminación
+                idEspacioSeleccionado = 0; comboTipo.setValue(null); txtCapacidad.clear(); txtPrecioHora.clear(); comboEstado.setValue("Disponible");
             } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Error de integridad: " + ex.getMessage()).show(); }
         });
 
