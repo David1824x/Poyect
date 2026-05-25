@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import java.util.List;
 
 public class VentanaProductos {
 
@@ -22,6 +23,9 @@ public class VentanaProductos {
     private final String COLOR_DANGER = "#EF4444";
     private final String COLOR_TEXT_PRIMARY = "#FFFFFF";
     private final String COLOR_TEXT_MUTED = "#A0A0A5";
+
+    //comentario Variable interna para recordar que ID de producto se encuentra en edicion o baja activa
+    private int idProductoSeleccionado = 0;
 
     // Reglas CSS para componentes homogéneos
     private final String STYLE_INPUT = String.format(
@@ -57,26 +61,18 @@ public class VentanaProductos {
         lblSubtitle.setStyle("-fx-text-fill: " + COLOR_ACCENT + ";");
         titleTitleBox.getChildren().addAll(lblTitle, lblSubtitle);
 
-        // Barra de búsqueda rápida por ID
+        // Barra de búsqueda rápida optimizada sin caja de texto ID
         HBox searchBar = new HBox(10);
         searchBar.setAlignment(Pos.CENTER_LEFT);
         searchBar.setPadding(new Insets(8, 12, 8, 12));
         searchBar.setStyle(String.format("-fx-background-color: %s; -fx-background-radius: 4; -fx-border-color: #27272A; -fx-border-radius: 4;", COLOR_CARD));
 
-        Label lblSearch = new Label("Buscar ID:");
-        lblSearch.setStyle(STYLE_LABEL);
-        
-        TextField txtId = new TextField();
-        txtId.setPromptText("Código");
-        txtId.setPrefWidth(90);
-        txtId.setStyle(STYLE_INPUT);
-
-        Button btnBuscar = new Button("Buscar Ítem");
+        Button btnBuscar = new Button("Buscar Productos");
         btnBuscar.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 14;", COLOR_INPUT));
         btnBuscar.setOnMouseEntered(e -> btnBuscar.setStyle("-fx-background-color: #3F3F46; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 14;"));
         btnBuscar.setOnMouseExited(e -> btnBuscar.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 14;", COLOR_INPUT)));
 
-        searchBar.getChildren().addAll(lblSearch, txtId, btnBuscar);
+        searchBar.getChildren().addAll(btnBuscar);
         headerBox.getChildren().addAll(titleTitleBox, searchBar);
         mainLayout.setTop(headerBox);
 
@@ -101,7 +97,9 @@ public class VentanaProductos {
         ));
         comboCategoria.setPromptText("Seleccionar...");
         comboCategoria.setMaxWidth(Double.MAX_VALUE);
-        comboCategoria.setStyle(STYLE_INPUT + " -fx-background-color: " + COLOR_INPUT + ";");
+        
+        //comentario Se inyecta -fx-base y -fx-control-inner-background para forzar que la lista desplegable interna sea oscura y el texto blanco
+        comboCategoria.setStyle(STYLE_INPUT + " -fx-background-color: " + COLOR_INPUT + "; -fx-base: " + COLOR_INPUT + "; -fx-control-inner-background: " + COLOR_INPUT + ";");
 
         Label lblPrecio = new Label("Precio Público ($):");
         lblPrecio.setStyle(STYLE_LABEL);
@@ -165,26 +163,28 @@ public class VentanaProductos {
 
         // --- ACCIONES DE LÓGICA ---
 
-        // Buscar
+        // Buscar todos
         btnBuscar.setOnAction(e -> {
             try {
-                if(txtId.getText().trim().isEmpty()) {
-                    new Alert(Alert.AlertType.WARNING, "Por favor, ingrese un ID para buscar.").show();
+                //comentario Trae la lista completa de productos desde la base de datos MySQL
+                List<Producto> lista = new ProductoDAO().buscarTodos();
+                if (lista.isEmpty()) {
+                    new Alert(Alert.AlertType.INFORMATION, "No existen productos registrados en el inventario.").show();
                     return;
                 }
-                Producto p = new ProductoDAO().buscarPorId(Integer.parseInt(txtId.getText().trim()));
-                if(p != null) {
+                
+                //comentario Invoca el catalogo general y mapea la fila elegida directamente al formulario
+                Consultas.verProductos(lista, p -> {
+                    idProductoSeleccionado = p.getId();
                     txtNombre.setText(p.getNombreProducto());
                     comboCategoria.setValue(p.getCategoria());
                     txtPrecio.setText(String.valueOf(p.getPrecioUnitario()));
                     txtCosto.setText(String.valueOf(p.getCostoUnitario()));
                     txtStock.setText(String.valueOf(p.getStockActual()));
                     txtMinimo.setText(String.valueOf(p.getStockMinimo()));
-                } else { 
-                    new Alert(Alert.AlertType.WARNING, "Producto no localizado en el catálogo.").show(); 
-                }
+                });
             } catch (Exception ex) { 
-                new Alert(Alert.AlertType.ERROR, "El identificador de búsqueda debe ser un número entero.").show(); 
+                new Alert(Alert.AlertType.ERROR, "Error de interconexión al buscar productos: " + ex.getMessage()).show(); 
             }
         });
 
@@ -200,22 +200,30 @@ public class VentanaProductos {
                     Integer.parseInt(txtStock.getText().trim()), 
                     Integer.parseInt(txtMinimo.getText().trim())
                 );
+                
+                //comentario Inserta el objeto Producto en la base de datos
                 new ProductoDAO().insertar(p);
                 new Alert(Alert.AlertType.INFORMATION, "Registro consolidado con éxito.").show();
+                
+                //comentario Limpia los campos post-registro para un nuevo ingreso
+                txtNombre.clear(); comboCategoria.setValue(null);
+                txtPrecio.clear(); txtCosto.clear(); txtStock.clear(); txtMinimo.clear();
+                idProductoSeleccionado = 0;
             } catch (Exception ex) { 
                 new Alert(Alert.AlertType.ERROR, "Inconsistencia de datos: Verifique los campos numéricos y que la categoría esté seleccionada.").show(); 
             }
         });
 
-        // Actualizar (Mapeado a la estructura lógica del DAO)
+        // Actualizar
         btnActualizar.setOnAction(e -> {
             try {
-                if(txtId.getText().trim().isEmpty()) {
-                    new Alert(Alert.AlertType.WARNING, "Especifique el ID del producto que desea actualizar en la sección superior.").show();
+                //comentario Valida que primero se haya buscado y seleccionado un producto de la tabla
+                if(idProductoSeleccionado == 0) {
+                    new Alert(Alert.AlertType.WARNING, "Primero presione 'Buscar Productos' y elija un registro con doble clic.").show();
                     return;
                 }
                 Producto p = new Producto(
-                    Integer.parseInt(txtId.getText().trim()), 
+                    idProductoSeleccionado, 
                     txtNombre.getText().trim(), 
                     comboCategoria.getValue(), 
                     Double.parseDouble(txtPrecio.getText().trim()), 
@@ -223,6 +231,8 @@ public class VentanaProductos {
                     Integer.parseInt(txtStock.getText().trim()), 
                     Integer.parseInt(txtMinimo.getText().trim())
                 );
+                
+                //comentario Actualiza los datos en la base de datos
                 new ProductoDAO().actualizar(p);
                 new Alert(Alert.AlertType.INFORMATION, "Información del producto actualizada correctamente.").show();
             } catch (Exception ex) { 
@@ -233,25 +243,33 @@ public class VentanaProductos {
         // Eliminar
         btnEliminar.setOnAction(e -> {
             try {
-                if(txtId.getText().trim().isEmpty()) {
-                    new Alert(Alert.AlertType.WARNING, "Ingrese el ID del ítem que desea dar de baja.").show();
+                //comentario Valida que exista una seleccion valida para proceder a borrar en la base de datos
+                if(idProductoSeleccionado == 0) {
+                    new Alert(Alert.AlertType.WARNING, "Primero presione 'Buscar Productos' y seleccione el ítem que dará de baja.").show();
                     return;
                 }
                 
-                // Diálogo de confirmación formal antes de romper persistencia
                 Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION, "¿Está seguro de eliminar de forma permanente este producto del inventario?", ButtonType.YES, ButtonType.NO);
                 confirmacion.setHeaderText("Confirmación de Baja");
                 confirmacion.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.YES) {
-                        // new ProductoDAO().eliminar(Integer.parseInt(txtId.getText().trim()));//-------------------------------
-                        new Alert(Alert.AlertType.INFORMATION, "El ítem ha sido removido del almacén.").show();
-                        // Limpieza de campos post-eliminación
-                        txtId.clear(); txtNombre.clear(); comboCategoria.setValue(null);
-                        txtPrecio.clear(); txtCosto.clear(); txtStock.clear(); txtMinimo.clear();
+                        try {
+                            //comentario Ejecuta la instrucción DELETE en la base de datos usando el ID seleccionado
+                            new ProductoDAO().eliminar(idProductoSeleccionado);
+                            new Alert(Alert.AlertType.INFORMATION, "El ítem ha sido removido del almacén.").show();
+                            
+                            //comentario Limpieza de campos post-eliminación
+                            txtNombre.clear(); comboCategoria.setValue(null);
+                            txtPrecio.clear(); txtCosto.clear(); txtStock.clear(); txtMinimo.clear();
+                            idProductoSeleccionado = 0;
+                        } catch (Exception daoEx) {
+                            //comentario Atrapa el error de la base de datos si el producto ya fue vendido y tiene conexion con DetalleVenta
+                            new Alert(Alert.AlertType.ERROR, "Error en el proceso de baja. El producto tiene un registro en las ventas y no puede ser eliminado.\nDetalle: " + daoEx.getMessage()).show();
+                        }
                     }
                 });
             } catch (Exception ex) { 
-                new Alert(Alert.AlertType.ERROR, "Error en el proceso de baja. Verifique dependencias de llaves foráneas.").show(); 
+                new Alert(Alert.AlertType.ERROR, "Error al procesar la solicitud de baja.").show(); 
             }
         });
 

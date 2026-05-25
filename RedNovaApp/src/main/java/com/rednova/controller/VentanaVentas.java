@@ -28,6 +28,9 @@ public class VentanaVentas {
         COLOR_INPUT, COLOR_TEXT_PRIMARY
     );
 
+    //comentario Regla CSS extendida para forzar modo oscuro en ComboBoxes
+    private final String STYLE_COMBO = STYLE_INPUT + " -fx-base: " + COLOR_INPUT + "; -fx-control-inner-background: " + COLOR_INPUT + ";";
+
     private final String STYLE_LABEL = String.format(
         "-fx-text-fill: %s; -fx-font-size: 13px; -fx-font-weight: bold;", COLOR_TEXT_MUTED
     );
@@ -41,13 +44,13 @@ public class VentanaVentas {
         mainLayout.setStyle("-fx-background-color: " + COLOR_BG + ";");
         mainLayout.setPadding(new Insets(24));
 
-        // --- HEADER (ENCABEZADO DEL MÓDULO) ---
+        // --- HEADER ---
         VBox headerBox = new VBox(4);
         headerBox.setPadding(new Insets(0, 0, 15, 0));
         
         Label lblTitle = new Label("NUEVA TRANSACCIÓN");
         lblTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
-        lblTitle.setStyle("-fx-text-fill: " + COLOR_TEXT_PRIMARY + "; -fx-letter-spacing: 0.5;");
+        lblTitle.setStyle("-fx-text-fill: " + COLOR_TEXT_PRIMARY + ";");
         
         Label lblSubtitle = new Label("Terminal de Punto de Venta Integral");
         lblSubtitle.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
@@ -59,7 +62,7 @@ public class VentanaVentas {
         headerBox.getChildren().addAll(lblTitle, lblSubtitle, separator);
         mainLayout.setTop(headerBox);
 
-        // --- COLOFCENTRO: FORMULARIO ALINEADO (GridPane en Tarjeta) ---
+        // --- FORMULARIO ---
         GridPane formGrid = new GridPane();
         formGrid.setHgap(15);
         formGrid.setVgap(14);
@@ -67,29 +70,24 @@ public class VentanaVentas {
         formGrid.setStyle(String.format("-fx-background-color: %s; -fx-background-radius: 6; -fx-border-color: #27272A; -fx-border-radius: 6;", COLOR_CARD));
         formGrid.setAlignment(Pos.TOP_LEFT);
 
-        // Componentes y etiquetas del Formulario
         Label lblUsuarioId = new Label("ID Cliente / Usuario:");
         lblUsuarioId.setStyle(STYLE_LABEL);
         TextField txtUsuarioId = new TextField();
-        txtUsuarioId.setPromptText("Ej. 102");
         txtUsuarioId.setStyle(STYLE_INPUT);
 
         Label lblProductoId = new Label("ID Producto / Ítem:");
         lblProductoId.setStyle(STYLE_LABEL);
         TextField txtProductoId = new TextField();
-        txtProductoId.setPromptText("Ej. 45");
         txtProductoId.setStyle(STYLE_INPUT);
 
         Label lblCantidad = new Label("Cantidad:");
         lblCantidad.setStyle(STYLE_LABEL);
         TextField txtCantidad = new TextField();
-        txtCantidad.setPromptText("0");
         txtCantidad.setStyle(STYLE_INPUT);
 
         Label lblPrecio = new Label("Precio Unitario ($):");
         lblPrecio.setStyle(STYLE_LABEL);
         TextField txtPrecio = new TextField();
-        txtPrecio.setPromptText("0.00");
         txtPrecio.setStyle(STYLE_INPUT);
 
         Label lblMetodo = new Label("Método de Pago:");
@@ -98,16 +96,15 @@ public class VentanaVentas {
             "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito", "Puntos Lealtad"
         ));
         comboMetodo.setValue("Efectivo");
-        comboMetodo.setMaxWidth(Double.MAX_VALUE); // Expandir al ancho total de la celda
-        comboMetodo.setStyle(STYLE_INPUT + " -fx-background-color: " + COLOR_INPUT + ";");
+        comboMetodo.setMaxWidth(Double.MAX_VALUE);
+        comboMetodo.setStyle(STYLE_COMBO); //comentario Estilo aplicado
 
         Label lblTotalTexto = new Label("Monto Total:");
         lblTotalTexto.setStyle(STYLE_LABEL);
         Label lblTotalDinero = new Label("$0.00");
         lblTotalDinero.setFont(Font.font("Segoe UI", FontWeight.BOLD, 22));
-        lblTotalDinero.setStyle("-fx-text-fill: #10B981;"); // Color verde esmeralda para el balance final
+        lblTotalDinero.setStyle("-fx-text-fill: #10B981;");
 
-        // Posicionar elementos en las coordenadas de la rejilla (Columna, Fila)
         formGrid.add(lblUsuarioId, 0, 0);   formGrid.add(txtUsuarioId, 1, 0);
         formGrid.add(lblProductoId, 0, 1);  formGrid.add(txtProductoId, 1, 1);
         formGrid.add(lblCantidad, 0, 2);    formGrid.add(txtCantidad, 1, 2);
@@ -115,77 +112,48 @@ public class VentanaVentas {
         formGrid.add(lblMetodo, 0, 4);      formGrid.add(comboMetodo, 1, 4);
         formGrid.add(lblTotalTexto, 0, 5);  formGrid.add(lblTotalDinero, 1, 5);
 
-        // Controlar el tamaño relativo de las columnas para orden estricto
-        ColumnConstraints col1 = new ColumnConstraints(140);
-        ColumnConstraints col2 = new ColumnConstraints(220);
-        formGrid.getColumnConstraints().addAll(col1, col2);
-
+        formGrid.getColumnConstraints().addAll(new ColumnConstraints(140), new ColumnConstraints(220));
         mainLayout.setCenter(formGrid);
 
-        // --- LÓGICA DE REACCIÓN EN TIEMPO REAL (Listeners) ---
+        // --- LÓGICA DE CÁLCULO ---
         Runnable calcularTotalDinamico = () -> {
             try {
                 int cant = txtCantidad.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtCantidad.getText().trim());
                 double precio = txtPrecio.getText().trim().isEmpty() ? 0.0 : Double.parseDouble(txtPrecio.getText().trim());
-                double total = cant * precio;
-                lblTotalDinero.setText(String.format("$%.2f", total));
-            } catch (NumberFormatException ex) {
-                lblTotalDinero.setText("$ --.--"); // Bandera visual de entrada inválida
-            }
+                lblTotalDinero.setText(String.format("$%.2f", cant * precio));
+            } catch (Exception ex) { lblTotalDinero.setText("$ --.--"); }
         };
+        txtCantidad.textProperty().addListener((o, old, n) -> calcularTotalDinamico.run());
+        txtPrecio.textProperty().addListener((o, old, n) -> calcularTotalDinamico.run());
 
-        txtCantidad.textProperty().addListener((obs, oldVal, newVal) -> calcularTotalDinamico.run());
-        txtPrecio.textProperty().addListener((obs, oldVal, newVal) -> calcularTotalDinamico.run());
-
-        // --- FOOTER (BOTONES DE ACCIÓN FORMALES) ---
+        // --- FOOTER ---
         HBox footerBox = new HBox(12);
         footerBox.setAlignment(Pos.CENTER_RIGHT);
         footerBox.setPadding(new Insets(18, 0, 0, 0));
-
         Button btnCancelar = new Button("Cancelar");
-        btnCancelar.setStyle("-fx-background-color: transparent; -fx-text-fill: " + COLOR_TEXT_MUTED + 
-                             "; -fx-border-color: #3F3F46; -fx-border-radius: 4; -fx-padding: 9 18; -fx-font-weight: bold; -fx-cursor: hand;");
+        btnCancelar.setStyle("-fx-background-color: transparent; -fx-text-fill: " + COLOR_TEXT_MUTED + "; -fx-border-color: #3F3F46; -fx-border-radius: 4; -fx-padding: 9 18; -fx-font-weight: bold; -fx-cursor: hand;");
         btnCancelar.setOnAction(e -> stage.close());
 
         Button btnRegistrar = new Button("Confirmar Transacción");
         btnRegistrar.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 10 22; -fx-font-weight: bold; -fx-cursor: hand;", COLOR_ACCENT));
-        
-        // Manejo de estados dinámicos (Hover) mediante controladores de ratón
-        btnRegistrar.setOnMouseEntered(e -> btnRegistrar.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 10 22; -fx-font-weight: bold; -fx-cursor: hand;", COLOR_ACCENT_HOVER)));
-        btnRegistrar.setOnMouseExited(e -> btnRegistrar.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 10 22; -fx-font-weight: bold; -fx-cursor: hand;", COLOR_ACCENT)));
+        footerBox.getChildren().addAll(btnCancelar, btnRegistrar);
+        mainLayout.setBottom(footerBox);
 
+        // --- LÓGICA DE REGISTRO ---
         btnRegistrar.setOnAction(e -> {
             try {
                 int uId = Integer.parseInt(txtUsuarioId.getText().trim());
                 int pId = Integer.parseInt(txtProductoId.getText().trim());
                 int cant = Integer.parseInt(txtCantidad.getText().trim());
                 double precio = Double.parseDouble(txtPrecio.getText().trim());
-                double total = cant * precio;
-                String metodoPago = comboMetodo.getValue();
-
-                // Conexión directa a la capa de persistencia lógica (DAO)
-                new VentaDAO().registrarVentaCompleta(uId, total, total, metodoPago, pId, cant, precio);
-                
-                Alert alertaExito = new Alert(Alert.AlertType.INFORMATION, "La operación se ha procesado correctamente.\nEcosistema RedNova sincronizado.");
-                alertaExito.setHeaderText("Transacción Exitosa");
-                alertaExito.setTitle("Éxito");
-                alertaExito.showAndWait();
+                new VentaDAO().registrarVentaCompleta(uId, cant * precio, cant * precio, comboMetodo.getValue(), pId, cant, precio);
+                new Alert(Alert.AlertType.INFORMATION, "Transacción exitosa.").show();
                 stage.close();
-            } catch (Exception ex) {
-                Alert alertaError = new Alert(Alert.AlertType.ERROR, "Error de validación: Verifique que todos los ID y cantidades sean números enteros válidos y no se incluyan caracteres de texto.");
-                alertaError.setHeaderText("Error en el Formulario");
-                alertaError.setTitle("Inconsistencia de Datos");
-                alertaError.show();
-            }
+            } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Datos inválidos.").show(); }
         });
 
-        footerBox.getChildren().addAll(btnCancelar, btnRegistrar);
-        mainLayout.setBottom(footerBox);
-
-        // --- ESCENA Y CONFIGURACIÓN DEL VENTANAL ---
         Scene scene = new Scene(mainLayout, 440, 490);
         stage.setScene(scene);
-        stage.setResizable(false); // Evita deformaciones innecesarias en ventanas de captura
         stage.show();
     }
 }

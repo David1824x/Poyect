@@ -1,6 +1,7 @@
 com\rednova\dao\VentaDAO.class
 com\rednova\model\ReporteVenta.class
 com\rednova\controller\VentanaUsuarios.class
+com\rednova\controller\Consultas.class
 com\rednova\controller\ReporteVenta.class
 com\rednova\dao\ProductoDAO.class
 com\rednova\rednovaapp\App.class
