@@ -23,7 +23,6 @@ public class VentanaReporte {
     private final String COLOR_TEXT_PRIMARY = "#FFFFFF";
     private final String COLOR_TEXT_MUTED = "#A0A0A5";
 
-    // Estilos de componentes para mantener simetría
     private final String STYLE_TABLE = 
         "-fx-background-color: #1A1A1E; " +
         "-fx-control-inner-background: #1A1A1E; " +
@@ -31,7 +30,7 @@ public class VentanaReporte {
         "-fx-table-cell-border-color: #27272A; " +
         "-fx-text-fill: white;";
 
-    public void mostrarReporte() {
+public void mostrarReporte() {
         Stage escenarioReporte = new Stage();
         escenarioReporte.setTitle("RedNova OS - Consola Analítica de Ventas");
 
@@ -40,15 +39,15 @@ public class VentanaReporte {
         mainLayout.setStyle("-fx-background-color: " + COLOR_BG + ";");
         mainLayout.setPadding(new Insets(24));
 
-        // --- ENCABEZADO (Header) ---
+        // --- ENCABEZADO ---
         VBox headerBox = new VBox(4);
         headerBox.setPadding(new Insets(0, 0, 20, 0));
         
         Label lblTitle = new Label("REPORTE HISTÓRICO DE VENTAS");
         lblTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
-        lblTitle.setStyle("-fx-text-fill: " + COLOR_TEXT_PRIMARY + "; -fx-letter-spacing: 1px;");
+        lblTitle.setStyle("-fx-text-fill: " + COLOR_TEXT_PRIMARY + ";");
         
-        Label lblSubtitle = new Label("Consulta inteligente y cruce relacional (JOIN MULTIPLE)");
+        Label lblSubtitle = new Label("Consulta inteligente y cruce relacional de órdenes de compra");
         lblSubtitle.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 12));
         lblSubtitle.setStyle("-fx-text-fill: " + COLOR_ACCENT + ";");
         
@@ -58,23 +57,36 @@ public class VentanaReporte {
         // --- CUERPO PRINCIPAL (TableView Avanzado) ---
         TableView<ReporteVenta> tablaReporte = new TableView<>();
         tablaReporte.setStyle(STYLE_TABLE);
-        // Distribuye proporcionalmente las columnas al ancho total
         tablaReporte.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Definición de columnas con estilos oscuros
+        // 1. Columna Producto - CORREGIDA CON ENLAZADO DIRECTO
         TableColumn<ReporteVenta, String> colProducto = new TableColumn<>("Especificación del Producto");
-        colProducto.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
+        colProducto.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNombreProducto())
+        );
 
-        TableColumn<ReporteVenta, Integer> colCantidad = new TableColumn<>("Cant.");
-        colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-        colCantidad.setMaxWidth(1000); // Hacerla más estrecha por consistencia numérica
+        // 2. Columna Cantidad - CORREGIDA CON ENLAZADO DIRECTO
+        TableColumn<ReporteVenta, String> colCantidad = new TableColumn<>("Cant.");
+        colCantidad.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(String.valueOf(cellData.getValue().getCantidad()))
+        );
+        colCantidad.setMaxWidth(1200); // Proporción simétrica para RedNova OS
 
-        TableColumn<ReporteVenta, Double> colPrecio = new TableColumn<>("Precio Aplicado");
-        colPrecio.setCellValueFactory(new PropertyValueFactory<>("precioAplicado"));
+        // 3. Columna Precio - RENDIMIENTO SEGURO
+        TableColumn<ReporteVenta, String> colPrecio = new TableColumn<>("Precio Aplicado");
+        colPrecio.setCellValueFactory(cellData -> {
+            double precio = cellData.getValue().getPrecioAplicado()!= 0 ? cellData.getValue().getPrecioAplicado() : 0;
+            // Si el método da problemas, usa directamente cellData.getValue().getPrecioAplicado()
+            return new javafx.beans.property.SimpleStringProperty(String.format("$%,.2f MXN", cellData.getValue().getPrecioAplicado()));
+        });
 
+        // 4. Columna Fecha - CORREGIDA CON ENLAZADO DIRECTO
         TableColumn<ReporteVenta, String> colFecha = new TableColumn<>("Fecha de Emisión");
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaCompleta"));
+        colFecha.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getFechaCompleta())
+        );
 
+        // Inyectar las columnas corregidas en la rejilla
         tablaReporte.getColumns().addAll(colProducto, colCantidad, colPrecio, colFecha);
         mainLayout.setCenter(tablaReporte);
 
@@ -82,25 +94,21 @@ public class VentanaReporte {
         VBox footerBox = new VBox(15);
         footerBox.setPadding(new Insets(20, 0, 0, 0));
 
-        // Panel de KPIs / Tarjetas de información resumida
         HBox kpiContainer = new HBox(15);
         kpiContainer.setAlignment(Pos.CENTER);
 
-        VBox cardIngresos = crearTarjetaKPI("INGRESOS TOTALES", "$0.00 MXN", "#10B981"); // Verde esmeralda analítico
+        VBox cardIngresos = crearTarjetaKPI("INGRESOS TOTALES", "$0.00 MXN", "#10B981");
         VBox cardUnidades = crearTarjetaKPI("UNIDADES VENDIDAS", "0 u.", COLOR_ACCENT);
 
         kpiContainer.getChildren().addAll(cardIngresos, cardUnidades);
         HBox.setHgrow(cardIngresos, Priority.ALWAYS);
         HBox.setHgrow(cardUnidades, Priority.ALWAYS);
 
-        // Botonera de control
         HBox buttonBar = new HBox(10);
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
 
         Button btnRegresar = new Button("Cerrar Consola");
         btnRegresar.setStyle("-fx-background-color: #27272A; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 8 20; -fx-font-weight: bold; -fx-cursor: hand; -fx-border-color: #3F3F46; -fx-border-radius: 4;");
-        btnRegresar.setOnMouseEntered(e -> btnRegresar.setStyle("-fx-background-color: #3F3F46; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 8 20; -fx-font-weight: bold; -fx-cursor: hand; -fx-border-color: #52525B; -fx-border-radius: 4;"));
-        btnRegresar.setOnMouseExited(e -> btnRegresar.setStyle("-fx-background-color: #27272A; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 8 20; -fx-font-weight: bold; -fx-cursor: hand; -fx-border-color: #3F3F46; -fx-border-radius: 4;"));
         btnRegresar.setOnAction(e -> escenarioReporte.close());
 
         buttonBar.getChildren().add(btnRegresar);
@@ -110,15 +118,11 @@ public class VentanaReporte {
         // --- INYECCIÓN Y CÁLCULO DE DATOS ---
         cargarDatosYMetricas(tablaReporte, (Label) cardIngresos.getChildren().get(1), (Label) cardUnidades.getChildren().get(1));
 
-        // Configuración de la escena
-        escenarioReporte.setScene(new Scene(mainLayout, 680, 500)); // Ajuste de tamaño proporcional para legibilidad
+        escenarioReporte.setScene(new Scene(mainLayout, 720, 520));
         escenarioReporte.setResizable(false);
         escenarioReporte.show();
     }
 
-    /**
-     * Helper para construir tarjetas de datos dinámicas con diseño unificado
-     */
     private VBox crearTarjetaKPI(String titulo, String valorInicial, String colorResaltado) {
         VBox card = new VBox(4);
         card.setPadding(new Insets(12, 16, 12, 16));
@@ -137,52 +141,58 @@ public class VentanaReporte {
         return card;
     }
 
-    /**
-     * Mapea el ResultSet, inyecta los elementos en el TableView e interactúa con el footer analítico
-     */
     private void cargarDatosYMetricas(TableView<ReporteVenta> tabla, Label lblTotalIngresos, Label lblTotalUnidades) {
-        String consultaJoin = "SELECT p.nombreProducto, dv.cantidad, dv.precioAplicado, v.Dia, v.Mes, v.Anio " +
-                              "FROM Venta v " +
-                              "JOIN DetalleVenta dv ON v.idVenta = dv.idVenta " +
-                              "JOIN Producto p ON dv.idProducto = p.idProducto";
+    // Consulta limpia utilizando los nombres de columna reales de tus tablas
+    String consultaJoin = "SELECT p.nombreProducto, dv.cantidad, dv.precioAplicado, v.Dia, v.Mes, v.Anio " +
+                          "FROM venta v " +
+                          "INNER JOIN detalleventa dv ON v.idVenta = dv.idVenta " +
+                          "INNER JOIN producto p ON dv.idProducto = p.idProducto";
 
-        ObservableList<ReporteVenta> listaVentas = FXCollections.observableArrayList();
+    ObservableList<ReporteVenta> listaVentas = FXCollections.observableArrayList();
+    
+    double acumuladorIngresos = 0;
+    int acumuladorUnidades = 0;
+
+    try (Connection conexionBaseDatos = com.rednova.util.Conexion.conectar()) {
         
-        double acumuladorIngresos = 0;
-        int acumuladorUnidades = 0;
+        if (conexionBaseDatos == null) {
+            throw new SQLException("La conexión devuelta es nula. Revisa parámetros.");
+        }
 
-        try (Connection conexionBaseDatos = com.rednova.util.Conexion.conectar();
-             PreparedStatement sentenciaPreparada = conexionBaseDatos.prepareStatement(consultaJoin);
+        try (PreparedStatement sentenciaPreparada = conexionBaseDatos.prepareStatement(consultaJoin);
              ResultSet resultadoConsulta = sentenciaPreparada.executeQuery()) {
 
             while (resultadoConsulta.next()) {
-                String fecha = resultadoConsulta.getString("Dia") + "/" + 
-                               resultadoConsulta.getString("Mes") + "/" + 
-                               resultadoConsulta.getString("Anio");
-                
+                // Extracción directa por el nombre real de la columna en la BD
+                String nombreProd = resultadoConsulta.getString("nombreProducto");
                 int cantidad = resultadoConsulta.getInt("cantidad");
                 double precio = resultadoConsulta.getDouble("precioAplicado");
-
-                // Cálculo financiero en tiempo de ejecución
+                
+                // Construcción de la fecha unificada (Ej: 24/05/2026)
+                String fecha = String.format("%02d/%02d/%d", 
+                    resultadoConsulta.getInt("Dia"), 
+                    resultadoConsulta.getInt("Mes"), 
+                    resultadoConsulta.getInt("Anio")
+                );
+                
+                // Métricas globales
                 acumuladorUnidades += cantidad;
                 acumuladorIngresos += (cantidad * precio);
                 
-                listaVentas.add(new ReporteVenta(
-                    resultadoConsulta.getString("nombreProducto"),
-                    cantidad,
-                    precio,
-                    fecha
-                ));
+                // Encapsular en el objeto modelo
+                listaVentas.add(new ReporteVenta(nombreProd, cantidad, precio, fecha));
             }
+            
             tabla.setItems(listaVentas);
 
-            // Pintar los resultados formateados en las tarjetas de analítica
-            lblTotalUnidades.setText(acumuladorUnidades + " unidades");
+            // Actualizar interfaz
+            lblTotalUnidades.setText(acumuladorUnidades + " u.");
             lblTotalIngresos.setText(String.format("$%,.2f MXN", acumuladorIngresos));
-
-        } catch (SQLException excepcionSql) {
-            new Alert(Alert.AlertType.ERROR, "Fallo de Interconexión en Reportes: " + excepcionSql.getMessage()).show();
-            excepcionSql.printStackTrace();
         }
+
+    } catch (SQLException excepcionSql) {
+        new Alert(Alert.AlertType.ERROR, "Error al cargar reporte: " + excepcionSql.getMessage()).show();
+        excepcionSql.printStackTrace();
     }
+}
 }
