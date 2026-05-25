@@ -1,6 +1,7 @@
 package com.rednova.controller;
 
 import com.rednova.model.*;
+import javafx.beans.property.SimpleDoubleProperty; //comentario Necesario para columnas de tipo Double
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -31,7 +32,7 @@ public class Consultas {
         }
     }
 
-    //comentario Metodo para mostrar todos los Usuarios y permitir seleccionar uno con doble clic
+    //comentario Metodo para mostrar todos los Usuarios
     public static void verUsuarios(List<Usuario> lista, Consumer<Usuario> alSeleccionar) {
         Stage stage = new Stage();
         stage.setTitle("Catálogo General de Usuarios - RedNova");
@@ -56,23 +57,16 @@ public class Consultas {
 
         tabla.getColumns().addAll(colId, colNum, colNombre, colTipo, colPuntos);
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        
         aplicarEstiloColumnas(tabla);
 
-        //comentario Evento de doble clic para retornar el elemento seleccionado a la ventana del formulario
         tabla.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2 && tabla.getSelectionModel().getSelectedItem() != null) {
-                Usuario seleccionado = tabla.getSelectionModel().getSelectedItem();
-                if (alSeleccionar != null) {
-                    alSeleccionar.accept(seleccionado);
-                }
+                alSeleccionar.accept(tabla.getSelectionModel().getSelectedItem());
                 stage.close();
             }
         });
 
-        ObservableList<Usuario> datos = FXCollections.observableArrayList(lista);
-        tabla.setItems(datos);
-
+        tabla.setItems(FXCollections.observableArrayList(lista));
         mostrarEscena(stage, tabla);
     }
 
@@ -101,26 +95,20 @@ public class Consultas {
 
         tabla.getColumns().addAll(colId, colNombre, colCat, colPrecio, colStock);
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        
         aplicarEstiloColumnas(tabla);
 
         tabla.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2 && tabla.getSelectionModel().getSelectedItem() != null) {
-                Producto seleccionado = tabla.getSelectionModel().getSelectedItem();
-                if (alSeleccionar != null) {
-                    alSeleccionar.accept(seleccionado);
-                }
+                alSeleccionar.accept(tabla.getSelectionModel().getSelectedItem());
                 stage.close();
             }
         });
 
-        ObservableList<Producto> datos = FXCollections.observableArrayList(lista);
-        tabla.setItems(datos);
-
+        tabla.setItems(FXCollections.observableArrayList(lista));
         mostrarEscena(stage, tabla);
     }
 
-    //comentario Metodo para mostrar todos los Equipos Tecnologicos
+    //comentario Metodo para mostrar Equipos y su tarifa por hora (Modificado)
     public static void verEquipos(List<EquipoTecnologico> lista, Consumer<EquipoTecnologico> alSeleccionar) {
         Stage stage = new Stage();
         stage.setTitle("Control de Hardware - RedNova");
@@ -137,31 +125,29 @@ public class Consultas {
         TableColumn<EquipoTecnologico, String> colSpecs = new TableColumn<>("Especificaciones");
         colSpecs.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getEspecificaciones()));
 
+        //comentario Nueva columna de precio por hora añadida
+        TableColumn<EquipoTecnologico, Double> colTarifa = new TableColumn<>("Precio/Hora");
+        colTarifa.setCellValueFactory(cd -> new SimpleDoubleProperty(cd.getValue().getTarifaPorHora()).asObject());
+
         TableColumn<EquipoTecnologico, String> colEstado = new TableColumn<>("Estado");
         colEstado.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getEstado()));
 
-        tabla.getColumns().addAll(colId, colTipo, colSpecs, colEstado);
+        tabla.getColumns().addAll(colId, colTipo, colSpecs, colTarifa, colEstado);
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        
         aplicarEstiloColumnas(tabla);
 
         tabla.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2 && tabla.getSelectionModel().getSelectedItem() != null) {
-                EquipoTecnologico seleccionado = tabla.getSelectionModel().getSelectedItem();
-                if (alSeleccionar != null) {
-                    alSeleccionar.accept(seleccionado);
-                }
+                alSeleccionar.accept(tabla.getSelectionModel().getSelectedItem());
                 stage.close();
             }
         });
 
-        ObservableList<EquipoTecnologico> datos = FXCollections.observableArrayList(lista);
-        tabla.setItems(datos);
-
+        tabla.setItems(FXCollections.observableArrayList(lista));
         mostrarEscena(stage, tabla);
     }
 
-    //comentario Metodo para mostrar todos los Espacios de Coworking
+    //comentario Metodo para mostrar Espacios
     public static void verEspacios(List<Espacio> lista, Consumer<Espacio> alSeleccionar) {
         Stage stage = new Stage();
         stage.setTitle("Infraestructura Coworking - RedNova");
@@ -183,31 +169,24 @@ public class Consultas {
 
         tabla.getColumns().addAll(colId, colTipo, colCap, colEstado);
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        
         aplicarEstiloColumnas(tabla);
 
         tabla.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2 && tabla.getSelectionModel().getSelectedItem() != null) {
-                Espacio seleccionado = tabla.getSelectionModel().getSelectedItem();
-                if (alSeleccionar != null) {
-                    alSeleccionar.accept(seleccionado);
-                }
+                alSeleccionar.accept(tabla.getSelectionModel().getSelectedItem());
                 stage.close();
             }
         });
 
-        ObservableList<Espacio> datos = FXCollections.observableArrayList(lista);
-        tabla.setItems(datos);
-
+        tabla.setItems(FXCollections.observableArrayList(lista));
         mostrarEscena(stage, tabla);
     }
 
-    //comentario Metodo con dimensiones aumentadas para dar soporte a multiples filas en pantalla
+    //comentario Escena configurada con dimensiones para soportar la nueva columna
     private static void mostrarEscena(Stage stage, TableView<?> tabla) {
         VBox root = new VBox(tabla);
         root.setPadding(new Insets(20));
         root.setStyle("-fx-background-color: #121214;");
-        
         Scene scene = new Scene(root, 1000, 600);
         stage.setScene(scene);
         stage.setResizable(false);

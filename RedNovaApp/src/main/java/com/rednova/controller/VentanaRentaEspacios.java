@@ -73,6 +73,12 @@ public class VentanaRentaEspacios {
         Label lblNombreClienteValor = new Label("---");
         lblNombreClienteValor.setStyle("-fx-text-fill: #E4E4E7; -fx-font-size: 13px; -fx-font-style: italic;");
 
+        // Nuevo campo: ID Espacio
+        Label lblIdEspacio = new Label("ID Espacio:");
+        lblIdEspacio.setStyle(STYLE_LABEL);
+        TextField txtIdEspacio = new TextField();
+        txtIdEspacio.setStyle(STYLE_INPUT);
+
         // ComboBox Espacios
         Label lblEspacio = new Label("Seleccionar Espacio:");
         lblEspacio.setStyle(STYLE_LABEL);
@@ -93,18 +99,35 @@ public class VentanaRentaEspacios {
         try {
             EspacioDAO dao = new EspacioDAO();
             List<Espacio> listaEspacios = dao.buscarTodos();
-            
-            // Si la conexión es nula o falla internamente, evitamos el NullPointerException
             if (listaEspacios != null) {
                 comboEspacio.setItems(FXCollections.observableArrayList(listaEspacios));
             } else {
-                comboEspacio.setPromptText("⚠️ Error: Sin conexión a la Base de Datos");
+                comboEspacio.setPromptText("⚠️ Error: Sin conexión");
             }
         } catch (Exception ex) {
-            // Captura cualquier fallo de conexión de forma silenciosa para la UI pero descriptiva
-            comboEspacio.setPromptText("⚠️ Error de conexión a la Base de Datos");
-            System.err.println("Error al inicializar espacios en el ComboBox: " + ex.getMessage());
+            comboEspacio.setPromptText("⚠️ Error de conexión");
         }
+
+        // --- LÓGICA DE SINCRONIZACIÓN ID <-> COMBO ---
+        // 1. Al escribir ID y dar Enter: busca el espacio
+        txtIdEspacio.setOnAction(e -> {
+            try {
+                int idBuscado = Integer.parseInt(txtIdEspacio.getText().trim());
+                for (Espacio esp : comboEspacio.getItems()) {
+                    if (esp.getIdEspacio() == idBuscado) {
+                        comboEspacio.setValue(esp);
+                        break;
+                    }
+                }
+            } catch (NumberFormatException ex) { /* Ignorar entrada inválida */ }
+        });
+
+        // 2. Al seleccionar en el combo: llena el campo ID
+        comboEspacio.setOnAction(e -> {
+            if (comboEspacio.getValue() != null) {
+                txtIdEspacio.setText(String.valueOf(comboEspacio.getValue().getIdEspacio()));
+            }
+        });
 
         // Horas de uso
         Label lblHoras = new Label("Horas de Reserva:");
@@ -131,12 +154,13 @@ public class VentanaRentaEspacios {
         lblTotalDinero.setFont(Font.font("Segoe UI", FontWeight.BOLD, 22));
         lblTotalDinero.setStyle("-fx-text-fill: #10B981;");
 
-        formGrid.add(lblUsuarioId, 0, 0);           formGrid.add(txtUsuarioId, 1, 0);
-        formGrid.add(lblNombreClienteTexto, 0, 1);  formGrid.add(lblNombreClienteValor, 1, 1);
-        formGrid.add(lblEspacio, 0, 2);             formGrid.add(comboEspacio, 1, 2);
-        formGrid.add(lblHoras, 0, 3);               formGrid.add(txtHoras, 1, 3);
-        formGrid.add(lblPuntosTexto, 0, 4);         formGrid.add(puntosContainer, 1, 4);
-        formGrid.add(lblTotalTexto, 0, 5);          formGrid.add(lblTotalDinero, 1, 5);
+        formGrid.add(lblUsuarioId, 0, 0);            formGrid.add(txtUsuarioId, 1, 0);
+        formGrid.add(lblNombreClienteTexto, 0, 1);   formGrid.add(lblNombreClienteValor, 1, 1);
+        formGrid.add(lblIdEspacio, 0, 2);            formGrid.add(txtIdEspacio, 1, 2);
+        formGrid.add(lblEspacio, 0, 3);              formGrid.add(comboEspacio, 1, 3);
+        formGrid.add(lblHoras, 0, 4);                formGrid.add(txtHoras, 1, 4);
+        formGrid.add(lblPuntosTexto, 0, 5);          formGrid.add(puntosContainer, 1, 5);
+        formGrid.add(lblTotalTexto, 0, 6);           formGrid.add(lblTotalDinero, 1, 6);
 
         formGrid.getColumnConstraints().addAll(new ColumnConstraints(140), new ColumnConstraints(260));
         mainLayout.setCenter(formGrid);
@@ -198,7 +222,7 @@ public class VentanaRentaEspacios {
         // --- FOOTER ---
         HBox footerBox = new HBox(12); footerBox.setAlignment(Pos.CENTER_RIGHT); footerBox.setPadding(new Insets(18, 0, 0, 0));
         Button btnCancelar = new Button("Cancelar");
-        btnCancelar.setStyle("-fx-background-color: transparent; -fx-text-fill: " + COLOR_TEXT_MUTED + "; -fx-border-color: #3F3F46; -fx-border-radius: 4; -fx-padding: 9 18; -fx-cursor: hand;");
+        btnCancelar.setStyle("-fx-background-color: transparent; -fx-text-fill: " + COLOR_TEXT_MUTED + "; -fx-border-color: #3F3F46; -fx-border-radius: 4; -fx-padding: 9 18; -fx-font-weight: bold; -fx-cursor: hand;");
         btnCancelar.setOnAction(e -> stage.close());
 
         Button btnRegistrar = new Button("Confirmar Espacio");
@@ -227,7 +251,7 @@ public class VentanaRentaEspacios {
             }
         });
 
-        Scene scene = new Scene(mainLayout, 620, 540);
+        Scene scene = new Scene(mainLayout, 620, 560);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
