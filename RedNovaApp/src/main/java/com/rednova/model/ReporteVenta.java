@@ -1,82 +1,29 @@
 package com.rednova.model;
 
-/**
- * Modelo: ReporteVenta
- * Representa la entidad lógica resultante del JOIN múltiple entre 
- * Venta, DetalleVenta y Producto para la consola analítica.
- */
 public class ReporteVenta {
-    
-    // Atributos privados correspondientes a las columnas de la interfaz
-    private String nombreProducto;
-    private int cantidad;
-    private double precioAplicado;
-    private String fechaCompleta; // Combinación de Dia/Mes/Anio
+    private String concepto;     // Producto, Espacio o Equipo
+    private String cantidad;     // "3 u." o "2 horas" o "5 horas"
+    private double precio;        // Costo calculado o precio unitario
+    private String fecha;         // Fecha de emisión o reserva
 
-    /**
-     * Constructor vacío por buenas prácticas y requerimientos de frameworks.
-     */
-    public ReporteVenta() {
-    }
+    public ReporteVenta() {}
 
-    /**
-     * Constructor completo utilizado para instanciar los registros recuperados 
-     * desde el ResultSet en el controlador de la vista.
-     */
-    public ReporteVenta(String nombreProducto, int cantidad, double precioAplicado, String fechaCompleta) {
-        this.nombreProducto = nombreProducto;
+    public ReporteVenta(String concepto, String cantidad, double precio, String fecha) {
+        this.concepto = concepto;
         this.cantidad = cantidad;
-        this.precioAplicado = precioAplicado;
-        this.fechaCompleta = fechaCompleta;
+        this.precio = precio;
+        this.fecha = fecha;
     }
 
-    // =========================================================================
-    //          GETTERS Y SETTERS (Obligatorios para JavaFX TableView)
-    // =========================================================================
+    public String getConcepto() { return concepto; }
+    public void setConcepto(String concepto) { this.concepto = concepto; }
 
-    public String getNombreProducto() {
-        return nombreProducto;
-    }
+    public String getCantidad() { return cantidad; }
+    public void setCantidad(String cantidad) { this.cantidad = cantidad; }
 
-    public void setNombreProducto(String nombreProducto) {
-        this.nombreProducto = nombreProducto;
-    }
+    public double getPrecio() { return precio; }
+    public void setPrecio(double precio) { this.precio = precio; }
 
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public double getPrecioAplicado() {
-        return precioAplicado;
-    }
-
-    public void setPrecioAplicado(double precioAplicado) {
-        this.precioAplicado = precioAplicado;
-    }
-
-    public String getFechaCompleta() {
-        return fechaCompleta;
-    }
-
-    public void setFechaCompleta(String fechaCompleta) {
-        this.fechaCompleta = fechaCompleta;
-    }
-
-    /**
-     * Sobrescritura del método toString para facilitar tareas de depuración (debugging) 
-     * en la consola de desarrollo.
-     */
-    @Override
-    public String toString() {
-        return "ReporteVenta{" +
-                "nombreProducto='" + nombreProducto + '\'' +
-                ", cantidad=" + cantidad +
-                ", precioAplicado=" + precioAplicado +
-                ", fechaCompleta='" + fechaCompleta + '\'' +
-                '}';
-    }
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
 }

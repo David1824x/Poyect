@@ -1,5 +1,8 @@
 package com.rednova.controller;
 
+import com.rednova.dao.ReservaEquipoDAO;
+import com.rednova.model.ReservaEquipo;
+import java.sql.Date;
 import com.rednova.dao.UsuarioDAO;
 import com.rednova.dao.EquipoDAO; // Asume este DAO para los equipos
 import com.rednova.model.Usuario;
@@ -198,27 +201,76 @@ public class VentanaRentaEquipos {
 
         // Registro final
         btnRegistrar.setOnAction(e -> {
-            try {
-                EquipoTecnologico eqSeleccionado = comboEquipo.getValue();
-                if(txtUsuarioId.getText().isEmpty() || eqSeleccionado == null || txtHoras.getText().isEmpty()) {
-                    new Alert(Alert.AlertType.WARNING, "Por favor complete todos los campos.").show();
-                    return;
-                }
-                int horas = Integer.parseInt(txtHoras.getText().trim());
-                if (horas <= 0) {
-                    new Alert(Alert.AlertType.ERROR, "Las horas deben ser mayores a cero.").show();
-                    return;
-                }
 
-                // Aquí llamarías a tu método transaccional, por ejemplo:
-                // new RentaDAO().registrarRentaEquipo(...);
-                
-                new Alert(Alert.AlertType.INFORMATION, "Renta de equipo autorizada correctamente.").show();
-                stage.close();
-            } catch (Exception ex) { 
-                new Alert(Alert.AlertType.ERROR, "Error en el sistema: " + ex.getMessage()).show(); 
-            }
-        });
+    try {
+
+        EquipoTecnologico eqSeleccionado = comboEquipo.getValue();
+
+        if(txtUsuarioId.getText().isEmpty()
+            || eqSeleccionado == null
+            || txtHoras.getText().isEmpty()) {
+
+            new Alert(
+                Alert.AlertType.WARNING,
+                "Por favor complete todos los campos."
+            ).show();
+
+            return;
+        }
+
+        int horas = Integer.parseInt(txtHoras.getText().trim());
+
+        if (horas <= 0) {
+
+            new Alert(
+                Alert.AlertType.ERROR,
+                "Las horas deben ser mayores a cero."
+            ).show();
+
+            return;
+        }
+
+        double totalFinal = Double.parseDouble(
+            lblTotalDinero.getText().replace("$", "")
+        );
+
+        ReservaEquipo reserva = new ReservaEquipo();
+
+        reserva.setIdUsuario(
+            Integer.parseInt(txtUsuarioId.getText().trim())
+        );
+
+        reserva.setIdEquipo(
+            eqSeleccionado.getIdEquipo()
+        );
+
+        reserva.setCantidadHoras(horas);
+
+        reserva.setPrecioTotal(totalFinal);
+
+        reserva.setFechaReserva(
+            new Date(System.currentTimeMillis())
+        );
+
+        ReservaEquipoDAO dao = new ReservaEquipoDAO();
+
+        dao.registrar(reserva);
+
+        new Alert(
+            Alert.AlertType.INFORMATION,
+            "Renta de equipo registrada correctamente."
+        ).show();
+
+        stage.close();
+
+    } catch (Exception ex) {
+
+        new Alert(
+            Alert.AlertType.ERROR,
+            "Error en el sistema: " + ex.getMessage()
+        ).show();
+    }
+});
 
         Scene scene = new Scene(mainLayout, 620, 540);
         stage.setScene(scene);

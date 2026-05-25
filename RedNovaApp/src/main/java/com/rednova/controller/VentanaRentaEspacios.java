@@ -1,5 +1,8 @@
 package com.rednova.controller;
 
+import com.rednova.dao.ReservaEspacioDAO;
+import com.rednova.model.ReservaEspacio;
+import java.sql.Date;
 import com.rednova.dao.UsuarioDAO;
 import com.rednova.dao.EspacioDAO;
 import com.rednova.model.Usuario;
@@ -232,24 +235,78 @@ public class VentanaRentaEspacios {
 
         // Registro final
         btnRegistrar.setOnAction(e -> {
-            try {
-                Espacio espSeleccionado = comboEspacio.getValue();
-                if(txtUsuarioId.getText().isEmpty() || espSeleccionado == null || txtHoras.getText().isEmpty()) {
-                    new Alert(Alert.AlertType.WARNING, "Por favor complete todos los campos.").show();
-                    return;
-                }
-                int horas = Integer.parseInt(txtHoras.getText().trim());
-                if (horas <= 0) {
-                    new Alert(Alert.AlertType.ERROR, "La duración de reserva debe ser mayor a 0 horas.").show();
-                    return;
-                }
-                
-                new Alert(Alert.AlertType.INFORMATION, "Espacio reservado con éxito.").show();
-                stage.close();
-            } catch (Exception ex) { 
-                new Alert(Alert.AlertType.ERROR, "Error en el sistema: " + ex.getMessage()).show(); 
-            }
-        });
+
+    try {
+
+        Espacio espSeleccionado = comboEspacio.getValue();
+
+        if(txtUsuarioId.getText().isEmpty()
+            || espSeleccionado == null
+            || txtHoras.getText().isEmpty()) {
+
+            new Alert(
+                Alert.AlertType.WARNING,
+                "Por favor complete todos los campos."
+            ).show();
+
+            return;
+        }
+
+        int horas = Integer.parseInt(
+            txtHoras.getText().trim()
+        );
+
+        if (horas <= 0) {
+
+            new Alert(
+                Alert.AlertType.ERROR,
+                "La duración de reserva debe ser mayor a 0 horas."
+            ).show();
+
+            return;
+        }
+
+        double totalFinal = Double.parseDouble(
+            lblTotalDinero.getText().replace("$", "")
+        );
+
+        ReservaEspacio reserva = new ReservaEspacio();
+
+        reserva.setIdUsuario(
+            Integer.parseInt(txtUsuarioId.getText().trim())
+        );
+
+        reserva.setIdEspacio(
+            espSeleccionado.getIdEspacio()
+        );
+
+        reserva.setCantidadHoras(horas);
+
+        reserva.setPrecioTotal(totalFinal);
+
+        reserva.setFechaReserva(
+            new Date(System.currentTimeMillis())
+        );
+
+        ReservaEspacioDAO dao = new ReservaEspacioDAO();
+
+        dao.registrar(reserva);
+
+        new Alert(
+            Alert.AlertType.INFORMATION,
+            "Reserva registrada correctamente."
+        ).show();
+
+        stage.close();
+
+    } catch (Exception ex) {
+
+        new Alert(
+            Alert.AlertType.ERROR,
+            "Error en el sistema: " + ex.getMessage()
+        ).show();
+    }
+});
 
         Scene scene = new Scene(mainLayout, 620, 560);
         stage.setScene(scene);
