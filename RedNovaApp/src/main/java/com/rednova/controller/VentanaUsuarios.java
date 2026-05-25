@@ -176,6 +176,7 @@ public class VentanaUsuarios {
                     new Alert(Alert.AlertType.WARNING, "Defina un ID numérico de usuario para consultar.").show();
                     return;
                 }
+                // Conexión al DAO para leer la base de datos
                 Usuario u = new UsuarioDAO().buscarPorId(Integer.parseInt(txtId.getText().trim()));
                 if(u != null) {
                     txtNumControl.setText(u.getNumeroControl());
@@ -205,6 +206,7 @@ public class VentanaUsuarios {
                 Usuario u = new Usuario(0, txtNumControl.getText().trim(), txtCorreo.getText().trim(), 
                                         txtNombre.getText().trim(), comboTipo.getValue(), LocalDate.now(), 0, "Bronce");
                 
+                // Conexión al DAO para insertar en la base de datos
                 new UsuarioDAO().registrar(u);
                 new Alert(Alert.AlertType.INFORMATION, "Usuario dado de alta exitosamente en el sistema RedNova.").show();
                 
@@ -234,6 +236,7 @@ public class VentanaUsuarios {
                     lblNivel.getText()
                 );
                 
+                // Conexión al DAO para hacer un UPDATE en la base de datos
                 new UsuarioDAO().actualizar(u);
                 new Alert(Alert.AlertType.INFORMATION, "Perfil de usuario actualizado correctamente.").show();
             } catch (Exception ex) {
@@ -253,16 +256,23 @@ public class VentanaUsuarios {
                 confirmacion.setHeaderText("Advertencia de Eliminación");
                 confirmacion.showAndWait().ifPresent(res -> {
                     if (res == ButtonType.YES) {
-                        //new UsuarioDAO().eliminar(Integer.parseInt(txtId.getText().trim()));//---------------------------------------
-                        new Alert(Alert.AlertType.INFORMATION, "El usuario ha sido removido del ecosistema.").show();
-                        
-                        // Reseteo visual completo
-                        txtId.clear(); txtNumControl.clear(); txtCorreo.clear(); txtNombre.clear(); 
-                        comboTipo.setValue(null); lblPuntos.setText("0 pts"); lblNivel.setText("BRONCE");
+                        try {
+                            // --- LÍNEA DESCOMENTADA Y CORREGIDA: Llamada real a la BD ---
+                            new UsuarioDAO().eliminar(Integer.parseInt(txtId.getText().trim()));
+                            
+                            new Alert(Alert.AlertType.INFORMATION, "El usuario ha sido removido del ecosistema.").show();
+                            
+                            // Reseteo visual completo
+                            txtId.clear(); txtNumControl.clear(); txtCorreo.clear(); txtNombre.clear(); 
+                            comboTipo.setValue(null); lblPuntos.setText("0 pts"); lblNivel.setText("BRONCE");
+                        } catch (Exception daoEx) {
+                            // Este Catch interno atrapa problemas específicos al intentar borrar en la base de datos
+                            new Alert(Alert.AlertType.ERROR, "Imposible eliminar: El usuario cuenta con transacciones activas o registros de renta asociados.\nDetalle: " + daoEx.getMessage()).show();
+                        }
                     }
                 });
             } catch (Exception ex) {
-                new Alert(Alert.AlertType.ERROR, "Imposible eliminar: El usuario cuenta con transacciones activas o registros de renta asociados.").show();
+                new Alert(Alert.AlertType.ERROR, "Error al procesar el ID ingresado. Verifique que sea un número.").show();
             }
         });
 
