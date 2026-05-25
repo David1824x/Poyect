@@ -77,10 +77,21 @@ public class ProductoDAO {
             ps.setDouble(4, p.getCostoUnitario());
             ps.setInt(5, p.getStockActual());
             ps.setInt(6, p.getStockMinimo());
-            ps.setInt(7, p.getId());
+            ps.setInt(7, p.getIdProducto());
             ps.executeUpdate();
         }
     }
+    
+    public void actualizarStock(int idProducto, int nuevoStock) throws SQLException {
+    String sql = "UPDATE Producto SET stockActual = ? WHERE idProducto = ?";
+    try (Connection conn = Conexion.conectar(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, nuevoStock);
+        ps.setInt(2, idProducto);
+        ps.executeUpdate();
+    }
+}
 
     public void eliminar(int id) throws SQLException {
         String sql = "DELETE FROM Producto WHERE idProducto = ?";

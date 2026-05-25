@@ -85,7 +85,7 @@ public class Consultas {
         tabla.setStyle(STYLE_TABLE);
 
         TableColumn<Producto, Integer> colId = new TableColumn<>("ID");
-        colId.setCellValueFactory(cd -> new SimpleObjectProperty<>(cd.getValue().getId()));
+        colId.setCellValueFactory(cd -> new SimpleObjectProperty<>(cd.getValue().getIdProducto()));
 
         TableColumn<Producto, String> colNombre = new TableColumn<>("Producto");
         colNombre.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getNombreProducto()));
@@ -208,7 +208,7 @@ public class Consultas {
         root.setPadding(new Insets(20));
         root.setStyle("-fx-background-color: #121214;");
         
-        Scene scene = new Scene(root, 620, 320);
+        Scene scene = new Scene(root, 1000, 600);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

@@ -175,7 +175,7 @@ public class VentanaProductos {
                 
                 //comentario Invoca el catalogo general y mapea la fila elegida directamente al formulario
                 Consultas.verProductos(lista, p -> {
-                    idProductoSeleccionado = p.getId();
+                    idProductoSeleccionado = p.getIdProducto();
                     txtNombre.setText(p.getNombreProducto());
                     comboCategoria.setValue(p.getCategoria());
                     txtPrecio.setText(String.valueOf(p.getPrecioUnitario()));
@@ -274,7 +274,7 @@ public class VentanaProductos {
         });
 
         // --- ESCENA Y CONFIGURACIÓN ---
-        Scene scene = new Scene(mainLayout, 450, 480);
+        Scene scene = new Scene(mainLayout, 600, 600);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

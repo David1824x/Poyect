@@ -61,7 +61,7 @@ public class VentanaLealtad {
 
         root.getChildren().addAll(new Label("SISTEMA DE LEALTAD"), txtIdUsuario, btnConsultar, lblInfo, btnCanjear);
         
-        stage.setScene(new Scene(root, 350, 300));
+        stage.setScene(new Scene(root, 600, 600));
         stage.show();
     }
 }

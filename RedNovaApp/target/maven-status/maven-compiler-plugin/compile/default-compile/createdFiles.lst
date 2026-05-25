@@ -22,3 +22,4 @@ com\rednova\util\Conexion.class
 com\rednova\model\Usuario.class
 com\rednova\controller\VentanaLealtad.class
 com\rednova\dao\EquipoDAO.class
+com\rednova\controller\VentanaVentas$1.class

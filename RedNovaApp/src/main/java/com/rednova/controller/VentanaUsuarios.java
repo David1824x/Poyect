@@ -190,7 +190,7 @@ public class VentanaUsuarios {
             } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage()).show(); }
         });
 
-        Scene scene = new Scene(mainLayout, 450, 490);
+        Scene scene = new Scene(mainLayout, 600, 600);
         stage.setScene(scene);
         stage.show();
     }

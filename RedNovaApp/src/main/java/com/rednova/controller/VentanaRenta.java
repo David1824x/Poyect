@@ -194,7 +194,7 @@ public class VentanaRenta {
             } catch (Exception ex) { new Alert(Alert.AlertType.ERROR, "Error de integridad: " + ex.getMessage()).show(); }
         });
 
-        Scene scene = new Scene(mainLayout, 450, 480);
+        Scene scene = new Scene(mainLayout, 600, 600);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

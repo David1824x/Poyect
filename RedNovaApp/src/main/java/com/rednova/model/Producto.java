@@ -19,7 +19,7 @@ public class Producto {
     }
 
     // Getters para acceder a los atributos
-    public int getId() { return id; }
+    public int getIdProducto() { return id; }
     public String getNombreProducto() { return nombre; }
     public String getCategoria() { return categoria; }
     public double getPrecioUnitario() { return precio; }

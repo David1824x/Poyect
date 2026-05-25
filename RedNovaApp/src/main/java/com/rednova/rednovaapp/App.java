@@ -32,7 +32,8 @@ public class App extends Application { // Aquí está el 'extends Application'
         grid.add(crearBtn("📈 Reportes", e -> new VentanaReporte().mostrarReporte()), 2, 1);
 
         root.getChildren().addAll(lbl, grid);
-        stage.setScene(new Scene(root, 900, 500));
+        stage.setScene(new Scene(root, 1000, 500));
+        stage.setMaximized(true);
         stage.show();
     }
 
